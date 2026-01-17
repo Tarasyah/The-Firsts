@@ -15,9 +15,9 @@ export default function Hero() {
           </p>
         </div>
 
-        <div className="bg-background rounded-xl shadow-lg p-6 flex flex-col justify-between items-start">
+        <div className="bg-background rounded-xl shadow-lg p-6 flex flex-col justify-between items-start transition-transform duration-200 ease-in-out hover:scale-105">
           <h2 className="font-headline text-2xl text-foreground/80">About</h2>
-          <Button variant="link" className="p-0 h-auto text-accent-foreground/90 hover:text-accent">
+          <Button variant="link" className="p-0 h-auto text-accent hover:text-accent/90">
             Read More <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </div>
