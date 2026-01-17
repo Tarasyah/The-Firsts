@@ -1,57 +1,76 @@
 "use client";
 
-import { useState } from "react";
-import type { Person } from "@/types";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import DetailModal from "@/components/detail-modal";
-import Marquee from "@/components/marquee";
+import * as React from "react";
+import Autoplay from "embla-carousel-autoplay";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 
-import forerunners from "@/lib/data/forerunners.json";
-import trendsetters from "@/lib/data/trendsetters.json";
-import strangers from "@/lib/data/strangers.json";
-import revivers from "@/lib/data/revivers.json";
-import distinguished from "@/lib/data/distinguished.json";
+const categoriesData = [
+    {
+      "id": "forerunners",
+      "title": "The Forerunners",
+      "arabicTitle": "السَّابِقُونَ",
+      "description": "The Firsts to Embrace The Call."
+    },
+    {
+      "id": "trendsetters",
+      "title": "The Trendsetters",
+      "arabicTitle": "الْمُسْتَنُّونَ",
+      "description": "Whoever Starts a Good Tradition..."
+    },
+    {
+      "id": "strangers",
+      "title": "The Strangers",
+      "arabicTitle": "الْغُرَبَاءُ",
+      "description": "Blessed are those who remain firm."
+    },
+    {
+      "id": "revivers",
+      "title": "The Revivers",
+      "arabicTitle": "الْمُجَدِّدُونَ",
+      "description": "Those who Restore the Forgotten Sunnah."
+    },
+    {
+      "id": "distinguished",
+      "title": "The Distinguished",
+      "arabicTitle": "الْمُحْسِنُونَ",
+      "description": "The Ones who Strive for Excellence."
+    }
+  ];
 
-const allData = [
-  { title: "The Forerunners", data: forerunners, direction: "left" as const },
-  { title: "The Trendsetters", data: trendsetters, direction: "right" as const },
-  { title: "The Strangers", data: strangers, direction: "left" as const },
-  { title: "The Revivers", data: revivers, direction: "right" as const },
-  { title: "The Distinguished", data: distinguished, direction: "left" as const },
-];
-
-export default function Archive() {
-  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
+export default function CategoriesCarousel() {
+  const plugin = React.useRef(
+    Autoplay({ delay: 3000, stopOnInteraction: true, stopOnMouseEnter: true })
+  );
 
   return (
-    <section className="py-12 md:py-20 space-y-8">
-      {allData.map((marqueeData) => (
-        <div key={marqueeData.title} className="space-y-4">
-          <h2 className="font-headline text-3xl md:text-4xl text-center">{marqueeData.title}</h2>
-          <Marquee direction={marqueeData.direction}>
-            {marqueeData.data.map((person) => (
-              <Card
-                key={person.id}
-                onClick={() => setSelectedPerson(person)}
-                className="w-80 mx-4 flex-shrink-0 cursor-pointer transition-transform hover:-translate-y-2 hover:shadow-2xl bg-card border-2"
-              >
-                <CardHeader>
-                  <CardTitle className="font-body font-bold">{person.name}</CardTitle>
-                  <CardDescription className="text-accent font-semibold">{person.title}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-foreground/80 line-clamp-4">{person.livesSummary}</p>
+    <Carousel
+      plugins={[plugin.current]}
+      className="w-full"
+      opts={{
+        align: "start",
+        loop: true,
+      }}
+    >
+      <CarouselContent>
+        {categoriesData.map((category) => (
+          <CarouselItem key={category.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+            <div className="p-1">
+              <Card className="bg-card/80 border-2 border-border h-48 flex flex-col justify-center cursor-pointer group hover:border-primary transition-colors">
+                <CardContent className="flex flex-col items-center justify-center p-4 text-center">
+                  <h3 className="font-headline text-xl text-foreground group-hover:text-primary transition-colors">{category.title}</h3>
+                  <p className="font-arabic text-2xl text-accent mt-1">{category.arabicTitle}</p>
+                  <p className="text-xs text-foreground/70 mt-3">{category.description}</p>
                 </CardContent>
               </Card>
-            ))}
-          </Marquee>
-        </div>
-      ))}
-      <DetailModal
-        person={selectedPerson}
-        isOpen={!!selectedPerson}
-        onClose={() => setSelectedPerson(null)}
-      />
-    </section>
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+    </Carousel>
   );
 }
