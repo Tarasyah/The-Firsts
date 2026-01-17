@@ -1,0 +1,29 @@
+[
+  {
+    "id": "distinguished-1",
+    "name": "Marie Curie",
+    "title": "The First Woman to Win a Nobel Prize",
+    "livesSummary": "A Polish and naturalized-French physicist and chemist who conducted pioneering research on radioactivity. She was the first woman to win a Nobel Prize, the first person and only woman to win the Nobel Prize twice, and the only person to win the Nobel Prize in two different scientific fields.",
+    "reasonBehindTitle": "Her groundbreaking research on radioactivity and her discoveries of polonium and radium shattered glass ceilings in the scientific community, earning her the Nobel Prize in Physics in 1903 and in Chemistry in 1911.",
+    "lessons": "Persistence in the face of institutional barriers and a relentless pursuit of knowledge can lead to world-changing discoveries.",
+    "youtubeTitle": "Marie Curie: The Courage of Knowledge"
+  },
+  {
+    "id": "distinguished-2",
+    "name": "Leonardo da Vinci",
+    "title": "The Renaissance Polymath",
+    "livesSummary": "An Italian polymath of the High Renaissance who was active as a painter, draughtsman, engineer, scientist, theorist, sculptor, and architect. His genius epitomized the Renaissance humanist ideal.",
+    "reasonBehindTitle": "His unquenchable curiosity and inventive imagination led to masterpieces in art and revolutionary concepts in science and engineering, centuries ahead of his time.",
+    "lessons": "True genius lies in the intersection of art and science, and in never ceasing to question the world around you.",
+    "youtubeTitle": "Da Vinci's Code: A Mind in Motion"
+  },
+  {
+    "id": "distinguished-3",
+    "name": "Nelson Mandela",
+    "title": "The First Black President of South Africa",
+    "livesSummary": "A South African anti-apartheid revolutionary, political leader, and philanthropist who served as the first president of South Africa from 1994 to 1999. He was the country's first black head of state and the first elected in a fully representative democratic election.",
+    "reasonBehindTitle": "After 27 years in prison, his leadership in dismantling apartheid and fostering reconciliation made him a global icon of peace and justice.",
+    "lessons": "Forgiveness and reconciliation are more powerful weapons than hatred and division. Courage is not the absence of fear, but the triumph over it.",
+    "youtubeTitle": "Mandela: The Long Walk to Freedom"
+  }
+]

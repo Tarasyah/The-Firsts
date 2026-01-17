@@ -1,0 +1,29 @@
+[
+  {
+    "id": "forerunner-1",
+    "name": "Ada Lovelace",
+    "title": "The First Computer Programmer",
+    "livesSummary": "An English mathematician and writer, chiefly known for her work on Charles Babbage's proposed mechanical general-purpose computer, the Analytical Engine. She is often regarded as one of the first computer programmers.",
+    "reasonBehindTitle": "She was the first to recognize that the machine had applications beyond pure calculation, and published the first algorithm intended to be carried out by such a machine.",
+    "lessons": "Foresight and imagination can reveal the true potential of new technologies beyond their creators' original intent.",
+    "youtubeTitle": "The Enchantress of Numbers: Ada Lovelace's Vision"
+  },
+  {
+    "id": "forerunner-2",
+    "name": "The Wright Brothers",
+    "title": "The First to Achieve Powered Flight",
+    "livesSummary": "Orville and Wilbur Wright were two American aviation pioneers generally credited with inventing, building, and flying the world's first successful motor-operated airplane.",
+    "reasonBehindTitle": "On December 17, 1903, they made the first controlled, sustained flight of a powered, heavier-than-air aircraft with the Wright Flyer, heralding the age of aviation.",
+    "lessons": "Meticulous research, persistent experimentation, and a strong partnership can turn seemingly impossible dreams into reality.",
+    "youtubeTitle": "Against the Wind: The Wright Brothers' Triumph"
+  },
+  {
+    "id": "forerunner-3",
+    "name": "Hedy Lamarr",
+    "title": "The Inventor of Frequency-Hopping",
+    "livesSummary": "An Austrian-American actress and inventor. During her film career, she was a major contract star of MGM's 'Golden Age'. She was also a self-taught inventor and co-developed a 'Secret Communication System' to combat Nazis in WWII.",
+    "reasonBehindTitle": "Her invention of frequency-hopping spread spectrum technology was a precursor to modern Wi-Fi, GPS, and Bluetooth technology.",
+    "lessons": "Talent and intellect are not confined to one field. A beautiful mind can be the most powerful tool.",
+    "youtubeTitle": "The Bombshell and the Brain: Hedy Lamarr's Secret"
+  }
+]

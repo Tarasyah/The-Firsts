@@ -1,0 +1,29 @@
+[
+  {
+    "id": "reviver-1",
+    "name": "Steve Jobs",
+    "title": "The Resurrector of Apple",
+    "livesSummary": "An American business magnate, industrial designer, investor, and media proprietor. He was the chairman, chief executive officer (CEO), and co-founder of Apple Inc.",
+    "reasonBehindTitle": "After being ousted from Apple, he returned in 1997 to a nearly bankrupt company. His vision and leadership revived Apple, leading to the creation of the iMac, iPod, iPhone, and iPad, transforming it into one of the world's most valuable companies.",
+    "lessons": "Passion, focus, and an unwavering commitment to simplicity and design can revolutionize industries and create products that people love.",
+    "youtubeTitle": "Think Different: The Return of Steve Jobs"
+  },
+  {
+    "id": "reviver-2",
+    "name": "Hayao Miyazaki",
+    "title": "The Reviver of Hand-Drawn Animation",
+    "livesSummary": "A Japanese animated film director, producer, screenwriter, animator, author, and manga artist. A co-founder of Studio Ghibli, he has attained international acclaim as a masterful storyteller and as a maker of animated feature films.",
+    "reasonBehindTitle": "In an era dominated by computer-generated imagery, Miyazaki continued to champion the art of hand-drawn animation, creating critically and commercially successful films that revived global appreciation for the craft.",
+    "lessons": "Artistic integrity and a dedication to traditional craftsmanship can create timeless works that resonate deeply with audiences worldwide.",
+    "youtubeTitle": "The Kingdom of Dreams and Madness: Miyazaki's Craft"
+  },
+  {
+    "id": "reviver-3",
+    "name": "Elon Musk",
+    "title": "The Reviver of Commercial Spaceflight",
+    "livesSummary": "A business magnate and investor. Musk is the founder, chairman, CEO and chief technology officer of SpaceX; angel investor, CEO, product architect and former chairman of Tesla, Inc.; owner, chairman and CTO of X Corp.; founder of the Boring Company; and co-founder of Neuralink and OpenAI.",
+    "reasonBehindTitle": "With SpaceX, he drastically reduced the cost of space launches and revived the dream of human space exploration and colonization, making it a viable commercial enterprise for the first time.",
+    "lessons": "First-principles thinking and an audacious, long-term vision can disrupt established industries and tackle humanity's greatest challenges.",
+    "youtubeTitle": "To Mars and Beyond: Elon Musk's SpaceX"
+  }
+]
