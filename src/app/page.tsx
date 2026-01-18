@@ -71,7 +71,7 @@ const CATEGORIES = [
     arabicTitle: 'السَّابِقُونَ', 
     tagline: 'The Firsts to Embrace The Call.', 
     color: '#10B981', // Emerald
-    img: 'https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?q=80&w=500&auto=format&fit=crop',
+    img: '/The Forerunners.jpg',
     dataStartIndex: 0 
   },
   { 
@@ -80,7 +80,7 @@ const CATEGORIES = [
     arabicTitle: 'الْمُسْتَنُّونَ', 
     tagline: 'Whoever Starts a Good Tradition...', 
     color: '#F59E0B', // Amber
-    img: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=500&auto=format&fit=crop',
+    img: '/The Trendsetters.jpg',
     dataStartIndex: theForerunners.length 
   },
   { 
@@ -89,7 +89,7 @@ const CATEGORIES = [
     arabicTitle: 'الْغُرَبَاءُ', 
     tagline: 'Blessed are those who remain firm.', 
     color: '#6366F1', // Indigo
-    img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=500&auto=format&fit=crop',
+    img: '/The Strangers.jpg',
     dataStartIndex: theForerunners.length + theTrendsetters.length
   },
   { 
@@ -98,7 +98,7 @@ const CATEGORIES = [
     arabicTitle: 'الْمُجَدِّدُونَ', 
     tagline: 'Those who Restore the Forgotten Sunnah.', 
     color: '#06B6D4', // Cyan
-    img: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=500&auto=format&fit=crop',
+    img: '/The Revivers.jpg',
     dataStartIndex: theForerunners.length + theTrendsetters.length + theStrangers.length
   },
   { 
@@ -107,7 +107,7 @@ const CATEGORIES = [
     arabicTitle: 'الْمُحْسِنُونَ', 
     tagline: 'The Ones who Strive for Excellence.', 
     color: '#EC4899', // Pink
-    img: 'https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=500&auto=format&fit=crop',
+    img: '/The Distinguished.jpg',
     dataStartIndex: theForerunners.length + theTrendsetters.length + theStrangers.length + theRevivers.length
   },
 ];
@@ -786,7 +786,7 @@ export default function Page() {
                   rounded-[32px] p-6 flex flex-col shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
                   ${activeCard === 'about' ? 'fixed inset-0 z-50 rounded-none w-full h-full m-0 p-4 md:p-6 overflow-y-auto cursor-auto' : 'md:col-span-1 relative hover:scale-[0.98] justify-between'}
                   ${activeCard === 'showreel' ? 'opacity-0 pointer-events-none' : 'opacity-100'} 
-                  ${isDarkMode ? (activeCard === 'about' ? 'bg-slate-900 border-white/10 text-white' : 'bg-slate-800 text-white') : (activeCard === 'about' ? 'bg-[#4C3F91] text-white' : 'bg-[#4C3F91] text-white')}
+                  ${isDarkMode ? (activeCard === 'about' ? 'bg-slate-900 border-white/10 text-white' : 'bg-slate-800 text-white') : (activeCard === 'about' ? 'bg-[#C203FC] text-white' : 'bg-[#C203FC] text-white')}
                 `}
               >
                 <motion.div layout="position" className="flex justify-between items-start w-full">
@@ -1014,3 +1014,5 @@ export default function Page() {
     </div>
   );
 };
+
+    
