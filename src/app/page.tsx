@@ -572,6 +572,7 @@ export default function Page() {
   };
   
   const handleCategoryCardClick = (item: any) => {
+    setIsSearchOpen(false);
     setInitialCompanionId(null);
     window.pendingCompanion = item;
     handleCardClick(item);
@@ -614,8 +615,12 @@ export default function Page() {
 
   const getSubDataForCategory = (category: any) => {
     if (!category) return [];
-    const categoryData = ALL_COMPANIONS_DATA.slice(category.dataStartIndex, category.dataStartIndex + 5);
-    return categoryData;
+    const startIndex = category.dataStartIndex;
+    // Find the end index. It's either the start of the next category or the end of the data array.
+    const nextCategory = CATEGORIES.find(c => c.dataStartIndex > startIndex);
+    const endIndex = nextCategory ? nextCategory.dataStartIndex : ALL_COMPANIONS_DATA.length;
+    
+    return ALL_COMPANIONS_DATA.slice(startIndex, endIndex);
   };
 
   const transitionSettings = { duration: 0.6, ease: [0.4, 0, 0.2, 1] };
@@ -652,38 +657,58 @@ export default function Page() {
             >
               {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-            <AnimatePresence>
-              {isSearchOpen && (
-                <motion.div
-                  initial={{ width: 0, opacity: 0 }}
-                  animate={{ width: 180, opacity: 1 }}
-                  exit={{ width: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                  className="overflow-hidden"
-                >
-                  <input
-                    type="text"
-                    placeholder="Search by name..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className={`h-full w-full bg-transparent px-2 text-sm outline-none ${isDarkMode ? 'text-white placeholder:text-white/40' : 'text-black placeholder:text-black/40'}`}
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <button 
-              onClick={() => {
-                setIsSearchOpen(!isSearchOpen);
-                if (isSearchOpen) setSearchQuery('');
-              }}
-              className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
-            >
-              {isSearchOpen ? <X size={20}/> : <Search size={20}/>}
-            </button>
+            
+            {activeCard ? (
+                <AnimatePresence>
+                    <motion.div
+                        initial={{ width: 0, opacity: 0 }}
+                        animate={{ width: "auto", opacity: 1 }}
+                        exit={{ width: 0, opacity: 0 }}
+                    >
+                        <button
+                            onClick={() => setActiveCard(null)}
+                            className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
+                        >
+                            <X size={20} />
+                        </button>
+                    </motion.div>
+                </AnimatePresence>
+            ) : (
+                <>
+                    <AnimatePresence>
+                      {isSearchOpen && (
+                        <motion.div
+                          initial={{ width: 0, opacity: 0 }}
+                          animate={{ width: 180, opacity: 1 }}
+                          exit={{ width: 0, opacity: 0 }}
+                          transition={{ duration: 0.3, ease: 'easeInOut' }}
+                          className="overflow-hidden"
+                        >
+                          <input
+                            type="text"
+                            placeholder="Search by name..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className={`h-full w-full bg-transparent px-2 text-sm outline-none ${isDarkMode ? 'text-white placeholder:text-white/40' : 'text-black placeholder:text-black/40'}`}
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                    <button 
+                      onClick={() => {
+                        setIsSearchOpen(!isSearchOpen);
+                        if (isSearchOpen) setSearchQuery('');
+                      }}
+                      className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
+                    >
+                      {isSearchOpen ? <X size={20}/> : <Search size={20}/>}
+                    </button>
+                </>
+            )}
         </div>
         
         <AnimatePresence>
-          {isSearchOpen && searchResults.length > 0 && (
+          {!activeCard && isSearchOpen && searchResults.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -703,24 +728,6 @@ export default function Page() {
                   </li>
                 ))}
               </ul>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {activeCard && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              className="flex"
-            >
-              <button
-                onClick={(e) => { e.stopPropagation(); setActiveCard(null); }}
-                className={`p-2 rounded-full transition-colors ${isDarkMode ? 'text-white bg-slate-800/50 border-white/10 hover:bg-white/10' : 'text-black bg-[#F5F5DC]/50 border-black/5 hover:bg-black/5'} border backdrop-blur-md`}
-              >
-                <X size={20} />
-              </button>
             </motion.div>
           )}
         </AnimatePresence>
@@ -767,7 +774,12 @@ export default function Page() {
             <div className="max-w-[98%] w-full mb-8 px-2 md:px-4 grid grid-cols-1 md:grid-cols-4 gap-4 h-auto md:h-64 relative z-10">
               <motion.div
                 layout
-                onClick={() => activeCard !== 'about' && setActiveCard('about')}
+                onClick={() => {
+                  if (activeCard !== 'about') {
+                    setActiveCard('about');
+                    setIsSearchOpen(false);
+                  }
+                }}
                 data-is-expanded={activeCard === 'about'}
                 transition={transitionSettings}
                 className={`
@@ -861,7 +873,12 @@ export default function Page() {
 
               <motion.div
                 layout
-                onClick={() => setActiveCard(activeCard === 'showreel' ? null : 'showreel')}
+                onClick={() => {
+                  if (activeCard !== 'showreel') {
+                    setActiveCard('showreel');
+                    setIsSearchOpen(false);
+                  }
+                }}
                 data-is-expanded={activeCard === 'showreel'}
                 transition={transitionSettings}
                 initial="initial"
