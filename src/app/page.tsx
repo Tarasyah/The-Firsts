@@ -792,9 +792,10 @@ export default function Page() {
                 data-is-expanded={activeCard === 'about'}
                 transition={transitionSettings}
                 className={`
+                  order-2 md:order-1
                   rounded-[32px] p-6 flex flex-col shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
                   ${activeCard === 'about' 
-                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-4 md:p-6 overflow-y-auto cursor-auto ${isDarkMode ? 'bg-[#2a0142] text-white' : 'bg-purple-100 text-purple-950'}` 
+                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-4 md:p-6 overflow-y-auto cursor-auto ${isDarkMode ? 'bg-purple-950 text-white' : 'bg-purple-100 text-purple-950'}` 
                     : `md:col-span-1 relative hover:scale-[0.98] justify-between bg-[#7C02A2] text-white`
                   }
                   ${activeCard === 'showreel' ? 'opacity-0 pointer-events-none' : 'opacity-100'} 
@@ -807,7 +808,7 @@ export default function Page() {
                     <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-full mx-auto w-full pb-32 px-2">
                         <div className="flex flex-col gap-4 h-full">
                             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2 md:mb-4">The Mission</h2>
-                            <div className={`${isDarkMode ? 'bg-white/10' : 'bg-purple-200/80'} rounded-3xl p-4 md:p-6 min-h-[300px] flex-1 flex flex-col justify-end gap-3 shadow-inner`}>
+                            <div className={`${isDarkMode ? 'bg-white/5' : 'bg-purple-200/50'} rounded-3xl p-4 md:p-6 min-h-[300px] flex-1 flex flex-col justify-end gap-3 shadow-inner`}>
                                 {CHAT_MESSAGES.map((msg) => (
                                     <motion.div key={msg.id} initial={{ opacity: 0, x: -20, scale: 0.9 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ delay: 0.4 + msg.delay, type: 'spring' }} className={`self-start px-5 py-3 rounded-2xl rounded-bl-none shadow-sm max-w-[90%] ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-purple-950'}`}>
                                         <p className="text-base md:text-lg font-medium">{msg.text}</p>
@@ -895,9 +896,10 @@ export default function Page() {
                 initial="initial"
                 whileHover="hover"
                 className={`
+                  order-3 md:order-2
                   rounded-[32px] p-6 flex flex-col justify-between shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
                   ${activeCard === 'showreel' 
-                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-0 overflow-y-auto cursor-auto ${isDarkMode ? 'bg-[#0a1814] text-white' : 'bg-emerald-100 text-emerald-950'}` 
+                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-0 overflow-y-auto cursor-auto ${isDarkMode ? 'bg-emerald-950 text-white' : 'bg-emerald-100 text-emerald-950'}` 
                     : 'md:col-span-1 relative bg-[#1A3C34] text-white'
                   }
                   ${activeCard === 'about' ? 'opacity-0 pointer-events-none' : 'opacity-100'}
@@ -905,7 +907,7 @@ export default function Page() {
               >
                 {activeCard === 'showreel' ? (
                     <div 
-                        className="flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-24 pb-32 px-4 md:px-8"
+                        className="flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-24 pb-48 px-4 md:px-8"
                         onClick={(e) => e.stopPropagation()} 
                     >
                         <motion.h2 
@@ -965,6 +967,7 @@ export default function Page() {
 
               <motion.div
                 className={`
+                  order-1 md:order-3
                   md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 group cursor-pointer
                   ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100 hover:scale-[0.98]'}
                   bg-black border border-neutral-800
