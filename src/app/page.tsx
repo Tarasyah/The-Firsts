@@ -355,9 +355,10 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
         <span className="font-bold text-xs uppercase tracking-widest hidden md:inline">HOME</span>
       </button>
 
-      <div className={`absolute inset-0 pointer-events-none`}>
-        <div className={`absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rounded-full blur-[160px] transition-colors duration-700 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
+      <div className={`absolute inset-y-0 right-0 w-1/2 pointer-events-none`}>
+          <div className={`absolute inset-0 rounded-full blur-[160px] transition-colors duration-700 transform scale-y-150 scale-x-125 translate-x-1/2 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
       </div>
+
 
       <div className="absolute left-0 top-0 h-full w-20 md:w-24 lg:w-40 z-30 pointer-events-none">
         <div className="absolute top-1/2 w-full h-0">
@@ -793,7 +794,7 @@ export default function Page() {
                 className={`
                   rounded-[32px] p-6 flex flex-col shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
                   ${activeCard === 'about' 
-                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-4 md:p-6 overflow-y-auto cursor-auto ${isDarkMode ? 'bg-[#2a0142] text-white' : 'bg-purple-50 text-purple-950'}` 
+                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-4 md:p-6 overflow-y-auto cursor-auto ${isDarkMode ? 'bg-[#2a0142] text-white' : 'bg-purple-100 text-purple-950'}` 
                     : `md:col-span-1 relative hover:scale-[0.98] justify-between bg-[#7C02A2] text-white`
                   }
                   ${activeCard === 'showreel' ? 'opacity-0 pointer-events-none' : 'opacity-100'} 
@@ -806,7 +807,7 @@ export default function Page() {
                     <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-full mx-auto w-full pb-32 px-2">
                         <div className="flex flex-col gap-4 h-full">
                             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2 md:mb-4">The Mission</h2>
-                            <div className={`${isDarkMode ? 'bg-white/10' : 'bg-purple-200/60'} rounded-3xl p-4 md:p-6 min-h-[300px] flex-1 flex flex-col justify-end gap-3 shadow-inner`}>
+                            <div className={`${isDarkMode ? 'bg-white/10' : 'bg-purple-200/80'} rounded-3xl p-4 md:p-6 min-h-[300px] flex-1 flex flex-col justify-end gap-3 shadow-inner`}>
                                 {CHAT_MESSAGES.map((msg) => (
                                     <motion.div key={msg.id} initial={{ opacity: 0, x: -20, scale: 0.9 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ delay: 0.4 + msg.delay, type: 'spring' }} className={`self-start px-5 py-3 rounded-2xl rounded-bl-none shadow-sm max-w-[90%] ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-purple-950'}`}>
                                         <p className="text-base md:text-lg font-medium">{msg.text}</p>
@@ -818,7 +819,7 @@ export default function Page() {
                                         value={chatInput}
                                         onChange={(e) => setChatInput(e.target.value)}
                                         placeholder="Write a message..."
-                                        className={`h-12 flex-1 rounded-full px-4 flex items-center text-sm md:text-base outline-none transition-colors border-2 border-transparent focus:border-[#10B981]/50 ${isDarkMode ? 'bg-white/10 text-white placeholder-white/50' : 'bg-purple-200 text-purple-950 placeholder-purple-950/60'}`}
+                                        className={`h-12 flex-1 rounded-full px-4 flex items-center text-sm md:text-base outline-none transition-colors border-2 border-transparent focus:border-[#10B981]/50 ${isDarkMode ? 'bg-white/10 text-white placeholder-white/50' : 'bg-purple-200/90 text-purple-950 placeholder-purple-950/60'}`}
                                     />
                                     <button 
                                         onClick={handleSendMessage}
@@ -832,7 +833,7 @@ export default function Page() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 4.8, duration: 0.5 }}
-                                className={`rounded-2xl p-4 border backdrop-blur-sm mt-auto ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black border-white/10' : 'bg-purple-200/50 border-purple-900/10'}`}
+                                className={`rounded-2xl p-4 border backdrop-blur-sm mt-auto ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black border-white/10' : 'bg-purple-200/70 border-purple-900/10'}`}
                             >
                                 <div className="flex items-center gap-3 mb-3">
                                     <span className={`text-[10px] font-bold tracking-widest uppercase ${isDarkMode ? 'text-white/40' : 'text-purple-950/40'}`}>Content Source</span>
@@ -896,7 +897,7 @@ export default function Page() {
                 className={`
                   rounded-[32px] p-6 flex flex-col justify-between shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
                   ${activeCard === 'showreel' 
-                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-0 overflow-y-auto cursor-auto ${isDarkMode ? 'bg-[#0a1814] text-white' : 'bg-emerald-50 text-emerald-950'}` 
+                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-0 overflow-y-auto cursor-auto ${isDarkMode ? 'bg-[#0a1814] text-white' : 'bg-emerald-100 text-emerald-950'}` 
                     : 'md:col-span-1 relative bg-[#1A3C34] text-white'
                   }
                   ${activeCard === 'about' ? 'opacity-0 pointer-events-none' : 'opacity-100'}
@@ -904,7 +905,7 @@ export default function Page() {
               >
                 {activeCard === 'showreel' ? (
                     <div 
-                        className="flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-24 pb-24 px-4 md:px-8"
+                        className="flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-24 pb-32 px-4 md:px-8"
                         onClick={(e) => e.stopPropagation()} 
                     >
                         <motion.h2 
@@ -923,7 +924,7 @@ export default function Page() {
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 transition={{ delay: 0.4 + (i * 0.1), type: 'spring', stiffness: 100 }}
                                 whileHover={{ scale: 1.03, y: -5 }}
-                                className={`p-8 rounded-3xl border transition-all group/card flex flex-col relative overflow-hidden w-full md:w-[calc(50%-12px)] lg:w-[calc(33.33%-16px)] ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-emerald-900/10 hover:bg-emerald-100'}`}
+                                className={`p-8 rounded-3xl border transition-all group/card flex flex-col relative overflow-hidden w-full md:w-[calc(50%-12px)] lg:w-[calc(33.33%-16px)] ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-emerald-900/10 hover:bg-emerald-200/50'}`}
                             >
                                 <div className="absolute top-0 right-0 p-32 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover/card:bg-emerald-500/20 transition-colors"></div>
                                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-lg ${isDarkMode ? 'bg-gradient-to-br from-white/20 to-white/5 border border-white/10 text-emerald-300' : 'bg-gradient-to-br from-emerald-200 to-white border border-emerald-900/10 text-emerald-600'}`}>
