@@ -320,23 +320,26 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
 
   const handlers = {
     wheel: (e: React.WheelEvent) => {
+      if (layout.mode === 'mobile') return;
       refs.current.velocity = 0;
       setState(p => ({ ...p, rotation: p.rotation - e.deltaY * 0.15 }));
     },
     down: (e: React.PointerEvent) => {
+      if (layout.mode === 'mobile') return;
       (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
       refs.current.velocity = 0;
       refs.current.lastY = e.clientY;
       setState(p => ({ ...p, isDragging: true }));
     },
     move: (e: React.PointerEvent) => {
-      if (!state.isDragging) return;
+      if (!state.isDragging || layout.mode === 'mobile') return;
       const delta = e.clientY - refs.current.lastY;
       setState(p => ({ ...p, rotation: p.rotation + delta * 0.5 }));
       refs.current.velocity = delta * 0.5;
       refs.current.lastY = e.clientY;
     },
     up: (e: React.PointerEvent) => {
+      if (layout.mode === 'mobile') return;
       setState(p => ({ ...p, isDragging: false }));
       (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
     }
@@ -363,50 +366,52 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
       </div>
 
 
-      <div className={cn("absolute left-0 top-0 h-full w-20 md:w-24 lg:w-40 z-30 pointer-events-none", state.showModal && "hidden")}>
-        <div className="absolute top-1/2 w-full h-0">
-          {visibleItems.map(({ id, data, angle }) => {
-            if (!data) return null;
-            const rad = (angle * Math.PI) / 180;
-            const dist = Math.abs(angle);
-            const opacity = 1 - dist / 100;
-            if (opacity <= 0) return null;
-            const isActive = data.id === active.id;
-            
-            let x, y, scale;
-            if (layout.mode === 'mobile') {
-                x = 0;
-                y = angle * 3.0;
-                scale = isActive ? 1.2 : 0.8;
-            } else {
-                x = layout.centerX + layout.radius * Math.cos(rad);
-                y = layout.radius * Math.sin(rad);
-                scale = isActive ? 1.3 : 0.7 - dist / 140;
-            }
+      {layout.mode !== 'mobile' && (
+        <div className={cn("absolute left-0 top-0 h-full w-20 md:w-24 lg:w-40 z-30 pointer-events-none", state.showModal && "hidden")}>
+          <div className="absolute top-1/2 w-full h-0">
+            {visibleItems.map(({ id, data, angle }) => {
+              if (!data) return null;
+              const rad = (angle * Math.PI) / 180;
+              const dist = Math.abs(angle);
+              const opacity = 1 - dist / 100;
+              if (opacity <= 0) return null;
+              const isActive = data.id === active.id;
+              
+              let x, y, scale;
+              if (layout.mode === 'mobile') {
+                  x = 0;
+                  y = angle * 3.0;
+                  scale = isActive ? 1.2 : 0.8;
+              } else {
+                  x = layout.centerX + layout.radius * Math.cos(rad);
+                  y = layout.radius * Math.sin(rad);
+                  scale = isActive ? 1.3 : 0.7 - dist / 140;
+              }
 
-            return (
-              <div key={id} className="absolute transform -translate-y-1/2 transition-transform duration-100 ease-out flex items-center justify-center w-full"
-                style={{
-                  top: 0,
-                  left: 0, 
-                  opacity, 
-                  zIndex: isActive ? 50 : 10,
-                  transform: `translate(${x}px, ${y}px) scale(${scale})`
-                }}>
-                <div className={`p-2 md:p-3 rounded-full backdrop-blur-md border shadow-2xl transition-all duration-300 ${isActive ? sidebarItemBgActive : sidebarItemBgInactive}`}>
-                  <data.icon className={`w-4 h-4 md:w-5 md:h-5 ${data.color}`} />
+              return (
+                <div key={id} className="absolute transform -translate-y-1/2 transition-transform duration-100 ease-out flex items-center justify-center w-full"
+                  style={{
+                    top: 0,
+                    left: 0, 
+                    opacity, 
+                    zIndex: isActive ? 50 : 10,
+                    transform: `translate(${x}px, ${y}px) scale(${scale})`
+                  }}>
+                  <div className={`p-2 md:p-3 rounded-full backdrop-blur-md border shadow-2xl transition-all duration-300 ${isActive ? sidebarItemBgActive : sidebarItemBgInactive}`}>
+                    <data.icon className={`w-4 h-4 md:w-5 md:h-5 ${data.color}`} />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+          {layout.mode !== 'mobile' && (
+              <div className={`absolute top-1/2 -translate-y-1/2 border-r rounded-full pointer-events-none ${isDarkMode ? 'border-white/5' : 'border-black/5'}`} 
+                   style={{ left: layout.centerX, width: layout.radius * 2, height: layout.radius * 2 }} />
+          )}
         </div>
-        {layout.mode !== 'mobile' && (
-            <div className={`absolute top-1/2 -translate-y-1/2 border-r rounded-full pointer-events-none ${isDarkMode ? 'border-white/5' : 'border-black/5'}`} 
-                 style={{ left: layout.centerX, width: layout.radius * 2, height: layout.radius * 2 }} />
-        )}
-      </div>
+      )}
 
-      <div className={`flex-1 flex flex-col justify-center items-end pl-20 md:pl-32 lg:pl-60 pr-4 md:pr-12 lg:pr-24 z-10 pointer-events-none h-full relative ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+      <div className={`flex-1 flex flex-col justify-center items-end pl-4 md:pl-32 lg:pl-60 pr-4 md:pr-12 lg:pr-24 z-10 pointer-events-none h-full relative ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
         <div key={active.id} className="max-w-2xl pointer-events-auto text-right w-full">
             <h3 className={`text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase mb-4 ${isDarkMode ? 'text-white/30' : 'text-black/50'}`}>{categoryInfo.name}</h3>
 
@@ -685,92 +690,99 @@ export default function Page() {
       <GlobalStyles />
       <MosaicBackground isDarkMode={isDarkMode} />
 
-      <div className={cn(
-        "fixed top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-end gap-2",
-        selectedCompanion && "hidden"
-      )}>
-         <div className={`flex items-center p-1.5 rounded-full transition-all duration-300 shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/50 border-white/10' : 'bg-[#F5F5DC]/50 border-black/5'}`}>
-            <button 
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-yellow-400 hover:bg-white/10' : 'text-slate-700 hover:bg-black/5'}`}
-            >
-              {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
-            
-            {activeCard ? (
-                <AnimatePresence>
-                    <motion.div
-                        initial={{ width: 0, opacity: 0 }}
-                        animate={{ width: "auto", opacity: 1 }}
-                        exit={{ width: 0, opacity: 0 }}
-                    >
-                        <button
-                            onClick={(e) => { e.stopPropagation(); setActiveCard(null); }}
-                            className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
-                        >
-                            <X size={20} />
-                        </button>
-                    </motion.div>
-                </AnimatePresence>
-            ) : (
-                <>
-                    <AnimatePresence>
-                      {isSearchOpen && (
-                        <motion.div
+      <AnimatePresence>
+        {!selectedCompanion && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-end gap-2"
+          >
+            <div className={`flex items-center p-1.5 rounded-full transition-all duration-300 shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/50 border-white/10' : 'bg-[#F5F5DC]/50 border-black/5'}`}>
+              <button 
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-yellow-400 hover:bg-white/10' : 'text-slate-700 hover:bg-black/5'}`}
+              >
+                {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+              </button>
+              
+              {activeCard ? (
+                  <AnimatePresence>
+                      <motion.div
                           initial={{ width: 0, opacity: 0 }}
-                          animate={{ width: 180, opacity: 1 }}
+                          animate={{ width: "auto", opacity: 1 }}
                           exit={{ width: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: 'easeInOut' }}
-                          className="overflow-hidden"
+                      >
+                          <button
+                              onClick={(e) => { e.stopPropagation(); setActiveCard(null); }}
+                              className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
+                          >
+                              <X size={20} />
+                          </button>
+                      </motion.div>
+                  </AnimatePresence>
+              ) : (
+                  <>
+                      <AnimatePresence>
+                        {isSearchOpen && (
+                          <motion.div
+                            initial={{ width: 0, opacity: 0 }}
+                            animate={{ width: 180, opacity: 1 }}
+                            exit={{ width: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: 'easeInOut' }}
+                            className="overflow-hidden"
+                          >
+                            <input
+                              type="text"
+                              placeholder="Search by name..."
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                              className={`h-full w-full bg-transparent px-2 text-sm outline-none ${isDarkMode ? 'text-white placeholder:text-white/40' : 'text-black placeholder:text-black/40'}`}
+                            />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                      <button 
+                        onClick={() => {
+                          setIsSearchOpen(!isSearchOpen);
+                          if (isSearchOpen) setSearchQuery('');
+                        }}
+                        className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
+                      >
+                        {isSearchOpen ? <X size={20}/> : <Search size={20}/>}
+                      </button>
+                  </>
+              )}
+            </div>
+            
+            <AnimatePresence>
+              {!activeCard && isSearchOpen && searchResults.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className={`w-64 max-h-80 overflow-y-auto p-2 rounded-2xl shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/70 border-white/10' : 'bg-[#F5F5DC]/70 border-black/5'}`}
+                >
+                  <ul>
+                    {searchResults.map(companion => (
+                      <li key={companion.id}>
+                        <button
+                          onClick={() => handleSearchResultClick(companion)}
+                          className={`w-full text-left p-2 rounded-lg text-sm flex items-center gap-3 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/10'}`}
                         >
-                          <input
-                            type="text"
-                            placeholder="Search by name..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className={`h-full w-full bg-transparent px-2 text-sm outline-none ${isDarkMode ? 'text-white placeholder:text-white/40' : 'text-black placeholder:text-black/40'}`}
-                          />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                    <button 
-                      onClick={() => {
-                        setIsSearchOpen(!isSearchOpen);
-                        if (isSearchOpen) setSearchQuery('');
-                      }}
-                      className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
-                    >
-                      {isSearchOpen ? <X size={20}/> : <Search size={20}/>}
-                    </button>
-                </>
-            )}
-        </div>
-        
-        <AnimatePresence>
-          {!activeCard && !selectedCompanion && isSearchOpen && searchResults.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className={`w-64 max-h-80 overflow-y-auto p-2 rounded-2xl shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/70 border-white/10' : 'bg-[#F5F5DC]/70 border-black/5'}`}
-            >
-              <ul>
-                {searchResults.map(companion => (
-                  <li key={companion.id}>
-                    <button
-                      onClick={() => handleSearchResultClick(companion)}
-                      className={`w-full text-left p-2 rounded-lg text-sm flex items-center gap-3 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/10'}`}
-                    >
-                      <companion.icon className={`w-4 h-4 shrink-0 ${companion.color}`} />
-                      <span className="flex-1 truncate">{companion.title}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+                          <companion.icon className={`w-4 h-4 shrink-0 ${companion.color}`} />
+                          <span className="flex-1 truncate">{companion.title}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <TransitionCurtain 
         mode={transitionMode} 
