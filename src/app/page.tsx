@@ -7,7 +7,8 @@ import {
   X, Send, Heart, Instagram, Linkedin, Globe, ArrowLeft,
   Sparkles, Zap, Anchor, Music, Camera, Star, Moon, Sun, Book, Shield, 
   Scroll, Users, Flame, Tent, Sunrise, Award, Feather, Crown, Key, Leaf, 
-  Droplet, Cloud, Eye, Compass, Map, Flag, Youtube, Target, RefreshCw as RefreshCwIcon
+  Droplet, Cloud, Eye, Compass, Map, Flag, Youtube, Target, RefreshCw as RefreshCwIcon,
+  Search
 } from 'lucide-react';
 
 // Import data from JSON files
@@ -220,7 +221,7 @@ const GlobalStyles = () => (
 /* -------------------------------------------------------------------------- */
 /* SUB-COMPONENT: CIRCULAR WHEEL (Immersive Detail View)                      */
 /* -------------------------------------------------------------------------- */
-const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode }: { items: any[], categoryInfo: any, onClose: () => void, isDarkMode: boolean }) => {
+const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompanionId }: { items: any[], categoryInfo: any, onClose: () => void, isDarkMode: boolean, initialCompanionId: number | null }) => {
   const CONFIG = { friction: 0.92, degPerItem: 36, visibleRange: 5 }; 
   
   const [state, setState] = useState({ rotation: 0, showModal: false, isDragging: false });
@@ -242,6 +243,16 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode }: { items: a
     window.addEventListener('resize', updateLayout);
     return () => window.removeEventListener('resize', updateLayout);
   }, []);
+  
+  useEffect(() => {
+    if (initialCompanionId !== null) {
+        const initialIndex = items.findIndex(item => item.id === initialCompanionId);
+        if (initialIndex > -1) {
+            const targetRotation = -initialIndex * CONFIG.degPerItem;
+            setState(prevState => ({ ...prevState, rotation: targetRotation }));
+        }
+    }
+  }, [initialCompanionId, items, CONFIG.degPerItem]);
 
   const DATA = items;
 
@@ -485,8 +496,8 @@ const TransitionCurtain = ({ mode, color, onCovered, onComplete, textData }: { m
             animate={{ opacity: [0, 1, 1, 0] }}
             transition={{ duration: 3.5, times: [0.3, 0.35, 0.65, 0.7] }} 
          >
-            <h1 className="text-5xl md:text-7xl font-black font-headline mb-4 tracking-tighter drop-shadow-xl">{textData.name}</h1>
-            <h2 className="text-3xl md:text-5xl font-arabic text-white/90 drop-shadow-md">{textData.arabicTitle}</h2>
+            <h1 className="font-headline font-black text-5xl md:text-7xl mb-4 tracking-tighter drop-shadow-xl">{textData.name}</h1>
+            <h2 className="text-arabic text-3xl md:text-5xl text-white/90 drop-shadow-md">{textData.arabicTitle}</h2>
          </motion.div>
       )}
     </div>
@@ -507,6 +518,10 @@ export default function Page() {
   const [selectedCompanion, setSelectedCompanion] = useState<any | null>(null);
   const [transitionTextData, setTransitionTextData] = useState<any | null>(null); 
   const [chatInput, setChatInput] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [initialCompanionId, setInitialCompanionId] = useState<number | null>(null);
 
   const duplicatedItems = [...CATEGORIES, ...CATEGORIES, ...CATEGORIES];
   const [singleScreenWidth, setSingleScreenWidth] = useState(0);
@@ -517,6 +532,18 @@ export default function Page() {
       setSingleScreenWidth(width / 3);
     }
   }, []);
+
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+        setSearchResults([]);
+        return;
+    }
+    const results = ALL_COMPANIONS_DATA.filter(c => 
+        c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.subtitle.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setSearchResults(results);
+  }, [searchQuery]);
 
   useAnimationFrame((t, delta) => {
     if (!isDragging && singleScreenWidth > 0 && !selectedCompanion && !transitionMode) {
@@ -543,12 +570,38 @@ export default function Page() {
     setTransitionTextData(item);
     setTransitionMode('enter');
   };
+  
+  const handleCategoryCardClick = (item: any) => {
+    setInitialCompanionId(null);
+    window.pendingCompanion = item;
+    handleCardClick(item);
+  };
+  
+  const handleSearchResultClick = (companion: any) => {
+    const companionId = companion.id;
+    let parentCategory = null;
+    for (let i = CATEGORIES.length - 1; i >= 0; i--) {
+        if (companionId >= CATEGORIES[i].dataStartIndex) {
+            parentCategory = CATEGORIES[i];
+            break;
+        }
+    }
+    if (parentCategory) {
+        setInitialCompanionId(companionId);
+        window.pendingCompanion = parentCategory;
+        handleCardClick(parentCategory);
+    }
+    setSearchQuery("");
+    setSearchResults([]);
+    setIsSearchOpen(false);
+  };
 
   const handleCloseDetail = () => {
     if (transitionMode) return;
     setTransitionColor(selectedCompanion?.color || '#000');
     setTransitionTextData(null);
     setTransitionMode('exit');
+    setInitialCompanionId(null);
   };
 
   const handleSendMessage = () => {
@@ -561,7 +614,6 @@ export default function Page() {
 
   const getSubDataForCategory = (category: any) => {
     if (!category) return [];
-    // Assuming 5 companions per category for this example
     const categoryData = ALL_COMPANIONS_DATA.slice(category.dataStartIndex, category.dataStartIndex + 5);
     return categoryData;
   };
@@ -592,28 +644,86 @@ export default function Page() {
       <GlobalStyles />
       <MosaicBackground isDarkMode={isDarkMode} />
 
-      <div className={`fixed top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-center gap-2`}>
-        <div className={`flex flex-col items-center p-2 rounded-full transition-all duration-300 shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/50 border-white/10' : 'bg-[#F5F5DC]/50 border-black/5'}`}>
+      <div className={`fixed top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-end gap-2`}>
+         <div className={`flex items-center p-1.5 rounded-full transition-all duration-300 shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/50 border-white/10' : 'bg-[#F5F5DC]/50 border-black/5'}`}>
             <button 
               onClick={() => setIsDarkMode(!isDarkMode)}
-              className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full transition-colors ${isDarkMode ? 'text-yellow-400 hover:bg-white/10' : 'text-slate-700 hover:bg-black/5'}`}
+              className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-yellow-400 hover:bg-white/10' : 'text-slate-700 hover:bg-black/5'}`}
             >
               {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
             <AnimatePresence>
-              {activeCard && (
-                <motion.button
-                  initial={{ opacity: 0, height: 0, scale: 0 }}
-                  animate={{ opacity: 1, height: 'auto', scale: 1 }}
-                  exit={{ opacity: 0, height: 0, scale: 0 }}
-                  onClick={(e) => { e.stopPropagation(); setActiveCard(null); }}
-                  className={`mt-2 p-2 rounded-full transition-colors ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
+              {isSearchOpen && (
+                <motion.div
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: 180, opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  className="overflow-hidden"
                 >
-                  <X size={20} />
-                </motion.button>
+                  <input
+                    type="text"
+                    placeholder="Search by name..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className={`h-full w-full bg-transparent px-2 text-sm outline-none ${isDarkMode ? 'text-white placeholder:text-white/40' : 'text-black placeholder:text-black/40'}`}
+                  />
+                </motion.div>
               )}
             </AnimatePresence>
+            <button 
+              onClick={() => {
+                setIsSearchOpen(!isSearchOpen);
+                if (isSearchOpen) setSearchQuery('');
+              }}
+              className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
+            >
+              {isSearchOpen ? <X size={20}/> : <Search size={20}/>}
+            </button>
         </div>
+        
+        <AnimatePresence>
+          {isSearchOpen && searchResults.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className={`w-64 max-h-80 overflow-y-auto p-2 rounded-2xl shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/70 border-white/10' : 'bg-[#F5F5DC]/70 border-black/5'}`}
+            >
+              <ul>
+                {searchResults.map(companion => (
+                  <li key={companion.id}>
+                    <button
+                      onClick={() => handleSearchResultClick(companion)}
+                      className={`w-full text-left p-2 rounded-lg text-sm flex items-center gap-3 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/10'}`}
+                    >
+                      <companion.icon className={`w-4 h-4 shrink-0 ${companion.color}`} />
+                      <span className="flex-1 truncate">{companion.title}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {activeCard && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              className="flex"
+            >
+              <button
+                onClick={(e) => { e.stopPropagation(); setActiveCard(null); }}
+                className={`p-2 rounded-full transition-colors ${isDarkMode ? 'text-white bg-slate-800/50 border-white/10 hover:bg-white/10' : 'text-black bg-[#F5F5DC]/50 border-black/5 hover:bg-black/5'} border backdrop-blur-md`}
+              >
+                <X size={20} />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <TransitionCurtain 
@@ -641,6 +751,7 @@ export default function Page() {
             items={getSubDataForCategory(selectedCompanion)}
             onClose={handleCloseDetail}
             isDarkMode={isDarkMode}
+            initialCompanionId={initialCompanionId}
         />
       )}
 
@@ -832,7 +943,7 @@ export default function Page() {
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-1000" />
                   <div className="flex flex-col items-center z-10 relative p-4">
                       <h1
-                        className="font-headline font-medium text-amber-500 md:text-neutral-800 transition-all duration-700 ease-out md:group-hover:-translate-y-2 md:group-hover:text-amber-100 md:group-hover:blur-0 blur-0 md:blur-[2px] md:group-hover:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)] text-5xl md:text-6xl lg:text-7xl tracking-widest"
+                        className="font-headline font-medium text-amber-500 md:text-neutral-800 transition-all duration-700 ease-out md:group-hover:-translate-y-2 md:group-hover:text-amber-100 md:group-hover:blur-0 blur-0 md:blur-[2px] md:group-hover:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)] text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] md:tracking-[0.3em]"
                       >
                         {MAIN_TITLE}
                       </h1>
@@ -860,10 +971,7 @@ export default function Page() {
                 {duplicatedItems.map((item, index) => (
                   <motion.div
                     key={`${item.id}-${index}`}
-                    onClick={() => {
-                        window.pendingCompanion = item;
-                        handleCardClick(item);
-                    }}
+                    onClick={() => handleCategoryCardClick(item)}
                     className={`relative flex-shrink-0 w-[280px] h-[400px] rounded-[32px] overflow-hidden group shadow-xl cursor-pointer transition-colors duration-300 ${cardBgClass}`}
                     whileHover={{ scale: 0.98 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
