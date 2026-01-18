@@ -462,16 +462,22 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
 /* -------------------------------------------------------------------------- */
 /* COMPONENT: TILE TRANSITION CURTAIN                                         */
 /* -------------------------------------------------------------------------- */
-const TransitionCurtain = ({ mode, color, onCovered, onComplete, textData }: { mode: 'enter' | 'exit' | null, color: string, onCovered: () => void, onComplete: () => void, textData: any }) => {
+const TransitionCurtain = ({ mode, color, onCovered, onComplete, textData, isMobile }: { mode: 'enter' | 'exit' | null, color: string, onCovered: () => void, onComplete: () => void, textData: any, isMobile: boolean }) => {
   useEffect(() => {
     if (mode) {
+      if (isMobile && textData == null) {
+        // Skip transition for About/Identity on mobile
+        onCovered();
+        onComplete();
+        return;
+      }
       const coverTimer = setTimeout(() => { onCovered(); }, 1200); 
       const endTimer = setTimeout(() => { onComplete(); }, 3500); 
       return () => { clearTimeout(coverTimer); clearTimeout(endTimer); };
     }
-  }, [mode, onCovered, onComplete]);
+  }, [mode, onCovered, onComplete, isMobile, textData]);
 
-  if (!mode) return null;
+  if (!mode || (isMobile && textData == null)) return null;
   const isEnter = mode === 'enter';
   const originSide = isEnter ? 'left' : 'right';
   const targetSide = isEnter ? 'right' : 'left';
@@ -557,7 +563,7 @@ export default function Page() {
   }, [searchQuery]);
 
   useAnimationFrame((t, delta) => {
-    if (!isDragging && singleScreenWidth > 0 && !selectedCompanion && !transitionMode) {
+    if (!isDragging && singleScreenWidth > 0 && !selectedCompanion && !transitionMode && !activeCard) {
       const moveBy = -1; 
       x.set(x.get() + moveBy);
     }
@@ -575,18 +581,30 @@ export default function Page() {
     return () => unsubscribe();
   }, [x, singleScreenWidth]);
 
-  const handleCardClick = (item: any) => {
+  const handleCardClick = (item: any, isCategory: boolean) => {
     if (transitionMode) return;
     window.pendingCompanion = item;
     setTransitionColor(item.color);
-    setTransitionTextData(item);
+    if(isCategory) {
+      setTransitionTextData(item);
+    } else {
+      setTransitionTextData(null); // For about/identity cards
+    }
     setTransitionMode('enter');
   };
   
   const handleCategoryCardClick = (item: any) => {
-    setIsSearchOpen(false);
-    setInitialCompanionId(null);
-    handleCardClick(item);
+    if (isMobile) {
+        setIsSearchOpen(false);
+        setInitialCompanionId(null);
+        handleCardClick(item, true);
+    } else {
+      if (transitionMode) return;
+      window.pendingCompanion = item;
+      setTransitionColor(item.color);
+      setTransitionTextData(item);
+      setTransitionMode('enter');
+    }
   };
   
   const handleSearchResultClick = (companion: any) => {
@@ -600,8 +618,12 @@ export default function Page() {
     }
     if (parentCategory) {
         setInitialCompanionId(companionId);
-        window.pendingCompanion = parentCategory;
-        handleCardClick(parentCategory);
+        if (isMobile) {
+            handleCardClick(parentCategory, true);
+        } else {
+            window.pendingCompanion = parentCategory;
+            handleCardClick(parentCategory, true);
+        }
     }
     setSearchQuery("");
     setSearchResults([]);
@@ -611,7 +633,9 @@ export default function Page() {
   const handleCloseDetail = () => {
     if (transitionMode) return;
     setTransitionColor(selectedCompanion?.color || '#000');
-    setTransitionTextData(null);
+    if (!isMobile) {
+      setTransitionTextData(null);
+    }
     setTransitionMode('exit');
     setInitialCompanionId(null);
   };
@@ -634,7 +658,7 @@ export default function Page() {
     return ALL_COMPANIONS_DATA.slice(startIndex, endIndex);
   };
 
-  const transitionSettings = { duration: 0.6, ease: [0.4, 0, 0.2, 1] };
+  const transitionSettings = isMobile ? { duration: 0 } : { duration: 0.6, ease: [0.4, 0, 0.2, 1] };
 
   const mainTextClass = isDarkMode ? 'text-white' : 'text-black';
   const cardBgClass = isDarkMode ? 'bg-slate-900 border border-white/10' : 'bg-[#F5F5DC]';
@@ -752,10 +776,16 @@ export default function Page() {
         mode={transitionMode} 
         color={transitionColor} 
         textData={transitionTextData}
+        isMobile={isMobile}
         onCovered={() => {
           if (transitionMode === 'enter' && window.pendingCompanion) {
-            setSelectedCompanion(window.pendingCompanion);
-            window.pendingCompanion = null;
+            if (isMobile && transitionTextData === null) {
+              setActiveCard(window.pendingCompanion.name === 'About' ? 'about' : 'showreel');
+              window.pendingCompanion = null;
+            } else {
+              setSelectedCompanion(window.pendingCompanion);
+              window.pendingCompanion = null;
+            }
           } 
           if (transitionMode === 'exit') {
             setSelectedCompanion(null);
@@ -787,36 +817,6 @@ export default function Page() {
             className="flex-1 flex flex-col"
           >
             <div className="max-w-[98%] w-full mb-8 px-2 md:px-4 grid grid-cols-1 md:grid-cols-4 gap-4 h-auto md:h-56 relative z-10">
-              <motion.div
-                className={`
-                  md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer
-                  ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
-                  bg-black border border-neutral-800
-                `}
-                onMouseEnter={() => setIsFirstsCardRevealed(true)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsFirstsCardRevealed(false);
-                }}
-              >
-                  <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black transition-opacity duration-1000", isFirstsCardRevealed ? 'opacity-100' : 'opacity-100 md:opacity-0')} />
-                  <div className="flex flex-col items-center z-10 relative p-4">
-                      <h1 className={cn(
-                        "font-headline font-medium text-amber-500 md:text-neutral-800 transition-all duration-700 ease-out text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] md:tracking-[0.3em]",
-                        isFirstsCardRevealed ? "md:-translate-y-2 md:text-amber-100 md:blur-0 md:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]" : "blur-0 md:blur-[2px]"
-                      )}>
-                        THE FIRSTS
-                      </h1>
-                      <div className={cn(
-                        "transition-all duration-1000 delay-300 mt-4 border-t border-amber-500/50 pt-3 w-full max-w-sm",
-                        isFirstsCardRevealed ? "opacity-100 translate-y-0 blur-none" : "opacity-100 md:opacity-0 translate-y-0 md:translate-y-2 blur-0 md:blur-sm"
-                      )}>
-                        <p className="text-[10px] md:text-xs text-amber-500/80 font-body tracking-[0.3em] uppercase">
-                          {SUBTITLE}
-                        </p>
-                      </div>
-                  </div>
-              </motion.div>
               <motion.div
                 layout={!isMobile}
                 onClick={() => {
@@ -888,7 +888,7 @@ export default function Page() {
                                 </p>
                             </motion.div>
                         </div>
-                        <div className="flex flex-col gap-6">
+                        <div className="flex flex-col gap-6 pb-24">
                             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2">The Categories</h2>
                             <div className="grid gap-3 mb-12">
                                 {DEFINITIONS.map((def, idx) => {
@@ -944,7 +944,7 @@ export default function Page() {
               >
                 {activeCard === 'showreel' ? (
                     <div 
-                        className={`flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-24 pb-64 px-4 md:px-8`}
+                        className={`flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-24 pb-96 px-4 md:px-8`}
                         onClick={(e) => e.stopPropagation()} 
                     >
                         <motion.h2 
@@ -1000,6 +1000,37 @@ export default function Page() {
                         </motion.div>
                     </>
                 )}
+              </motion.div>
+              <motion.div
+                layout={!isMobile}
+                className={`
+                  md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer
+                  ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
+                  bg-black border border-neutral-800
+                `}
+                onMouseEnter={() => setIsFirstsCardRevealed(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsFirstsCardRevealed(false);
+                }}
+              >
+                  <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black transition-opacity duration-1000", isFirstsCardRevealed ? 'opacity-100' : 'opacity-100 md:opacity-0')} />
+                  <div className="flex flex-col items-center z-10 relative p-4">
+                      <h1 className={cn(
+                        "font-headline font-medium text-amber-500 md:text-neutral-800 transition-all duration-700 ease-out text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] md:tracking-[0.3em]",
+                        isFirstsCardRevealed ? "md:-translate-y-2 md:text-amber-100 md:blur-0 md:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]" : "blur-0 md:blur-[2px]"
+                      )}>
+                        THE FIRSTS
+                      </h1>
+                      <div className={cn(
+                        "transition-all duration-1000 delay-300 mt-4 border-t border-amber-500/50 pt-3 w-full max-w-sm",
+                        isFirstsCardRevealed ? "opacity-100 translate-y-0 blur-none" : "opacity-100 md:opacity-0 translate-y-0 md:translate-y-2 blur-0 md:blur-sm"
+                      )}>
+                        <p className="text-[10px] md:text-xs text-amber-500/80 font-body tracking-[0.3em] uppercase">
+                          {SUBTITLE}
+                        </p>
+                      </div>
+                  </div>
               </motion.div>
             </div>
 
