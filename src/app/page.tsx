@@ -356,7 +356,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
       </button>
 
       <div className={`absolute inset-0 pointer-events-none`}>
-        <div className={`absolute inset-0 m-auto w-[600px] h-[600px] rounded-full blur-[120px] transition-colors duration-700 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
+        <div className={`absolute top-1/2 right-0 translate-x-1/3 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[120px] transition-colors duration-700 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
       </div>
 
       <div className="absolute left-0 top-0 h-full w-20 md:w-24 lg:w-40 z-30 pointer-events-none">
@@ -1020,5 +1020,3 @@ export default function Page() {
     </div>
   );
 };
-
-    
