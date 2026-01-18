@@ -18,6 +18,13 @@ import theStrangers from '@/data/The Strangers.json';
 import theRevivers from '@/data/The Revivers.json';
 import theDistinguished from '@/data/The Distinguished.json';
 
+// Import images from the root directory
+import forerunnersImg from '../../Image Cover/Forerunners.png';
+import trendsettersImg from '../../Image Cover/Trendsetters.png';
+import strangersImg from '../../Image Cover/Strangers.png';
+import reviversImg from '../../Image Cover/Revivers.png';
+import distinguishedImg from '../../Image Cover/Distinguished.png';
+
 
 // Extend the Window interface for the pendingCompanion hack
 declare global {
@@ -71,7 +78,7 @@ const CATEGORIES = [
     arabicTitle: 'السَّابِقُونَ', 
     tagline: 'The Firsts to Embrace The Call.', 
     color: '#10B981', // Emerald
-    img: '/Image Cover/Forerunners.png',
+    img: forerunnersImg,
     dataStartIndex: 0 
   },
   { 
@@ -80,7 +87,7 @@ const CATEGORIES = [
     arabicTitle: 'الْمُسْتَنُّونَ', 
     tagline: 'Whoever Starts a Good Tradition...', 
     color: '#F59E0B', // Amber
-    img: '/Image Cover/Trendsetters.png',
+    img: trendsettersImg,
     dataStartIndex: theForerunners.length 
   },
   { 
@@ -89,7 +96,7 @@ const CATEGORIES = [
     arabicTitle: 'الْغُرَبَاءُ', 
     tagline: 'Blessed are those who remain firm.', 
     color: '#6366F1', // Indigo
-    img: '/Image Cover/Strangers.png',
+    img: strangersImg,
     dataStartIndex: theForerunners.length + theTrendsetters.length
   },
   { 
@@ -98,7 +105,7 @@ const CATEGORIES = [
     arabicTitle: 'الْمُجَدِّدُونَ', 
     tagline: 'Those who Restore the Forgotten Sunnah.', 
     color: '#06B6D4', // Cyan
-    img: '/Image Cover/Revivers.png',
+    img: reviversImg,
     dataStartIndex: theForerunners.length + theTrendsetters.length + theStrangers.length
   },
   { 
@@ -107,7 +114,7 @@ const CATEGORIES = [
     arabicTitle: 'الْمُحْسِنُونَ', 
     tagline: 'The Ones who Strive for Excellence.', 
     color: '#EC4899', // Pink
-    img: '/Image Cover/Distinguished.png',
+    img: distinguishedImg,
     dataStartIndex: theForerunners.length + theTrendsetters.length + theStrangers.length + theRevivers.length
   },
 ];
@@ -1014,7 +1021,3 @@ export default function Page() {
     </div>
   );
 };
-
-    
-
-    
