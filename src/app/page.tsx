@@ -803,9 +803,9 @@ export default function Page() {
                     <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-full mx-auto w-full pb-32 px-2">
                         <div className="flex flex-col gap-4 h-full">
                             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2 md:mb-4">The Mission</h2>
-                            <div className={`rounded-3xl p-4 md:p-6 min-h-[300px] flex-1 flex flex-col justify-end gap-3 shadow-inner ${isDarkMode ? 'bg-white/5' : 'bg-white/10'}`}>
+                            <div className={`rounded-3xl p-4 md:p-6 min-h-[300px] flex-1 flex flex-col justify-end gap-3 shadow-inner ${isDarkMode ? 'bg-slate-800' : 'bg-white/20'}`}>
                                 {CHAT_MESSAGES.map((msg) => (
-                                    <motion.div key={msg.id} initial={{ opacity: 0, x: -20, scale: 0.9 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ delay: 0.4 + msg.delay, type: 'spring' }} className={`self-start px-5 py-3 rounded-2xl rounded-bl-none shadow-sm max-w-[90%] ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-slate-800 text-white'}`}>
+                                    <motion.div key={msg.id} initial={{ opacity: 0, x: -20, scale: 0.9 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ delay: 0.4 + msg.delay, type: 'spring' }} className={`self-start px-5 py-3 rounded-2xl rounded-bl-none shadow-sm max-w-[90%] ${isDarkMode ? 'bg-slate-700 text-white' : 'bg-white text-black'}`}>
                                         <p className="text-base md:text-lg font-medium">{msg.text}</p>
                                     </motion.div>
                                 ))}
@@ -837,7 +837,7 @@ export default function Page() {
                                 </div>
                                 <YaqeenLogo className={`h-8 md:h-12 w-auto mb-3 ${isDarkMode ? 'text-white' : 'text-white'}`} />
                                 <p className={`text-xs leading-relaxed ${isDarkMode ? 'opacity-60' : 'text-slate-300'}`}>
-                                    All historical content is sourced from the <strong>"The Firsts"</strong> series by Yaqeen Institute.
+                                    All historical content is sourced from the <strong><a href="https://www.youtube.com/playlist?list=PLQ02IYL5pmhHFl7j6wPcFTZmlQvRhsejp" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/80 transition-colors">"The Firsts"</a></strong> series by Yaqeen Institute.
                                     <br className="mb-2"/>
                                     <span className="italic block mt-1 opacity-80">
                                         "If you find any errors or have feedback, please feel free to contact me."
@@ -966,7 +966,7 @@ export default function Page() {
               >
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-1000" />
                   <div className="flex flex-col items-center z-10 relative p-4">
-                  <h1 className="font-headline font-medium text-amber-500 md:text-neutral-800 transition-all duration-700 ease-out md:group-hover:-translate-y-2 md:group-hover:text-amber-100 md:group-hover:blur-0 blur-0 md:blur-[2px] md:group-hover:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)] text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] md:tracking-[0.3em]">
+                      <h1 className="font-headline font-medium text-amber-500 md:text-neutral-800 transition-all duration-700 ease-out md:group-hover:-translate-y-2 md:group-hover:text-amber-100 md:group-hover:blur-0 blur-0 md:blur-[2px] md:group-hover:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)] text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] md:tracking-[0.3em]">
                         THE FIRSTS
                       </h1>
                       <div className="transition-all duration-1000 delay-300 opacity-100 md:opacity-0 md:group-hover:opacity-100 translate-y-0 md:translate-y-2 md:group-hover:translate-y-0 blur-0 md:blur-sm md:group-hover:blur-none mt-4 border-t border-amber-500/50 pt-3 w-full max-w-sm">
