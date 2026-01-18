@@ -666,7 +666,7 @@ export default function Page() {
                         exit={{ width: 0, opacity: 0 }}
                     >
                         <button
-                            onClick={() => setActiveCard(null)}
+                            onClick={(e) => { e.stopPropagation(); setActiveCard(null); }}
                             className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
                         >
                             <X size={20} />
@@ -786,7 +786,7 @@ export default function Page() {
                   rounded-[32px] p-6 flex flex-col shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
                   ${activeCard === 'about' ? 'fixed inset-0 z-50 rounded-none w-full h-full m-0 p-4 md:p-6 overflow-y-auto cursor-auto' : 'md:col-span-1 relative hover:scale-[0.98] justify-between'}
                   ${activeCard === 'showreel' ? 'opacity-0 pointer-events-none' : 'opacity-100'} 
-                  ${isDarkMode ? (activeCard === 'about' ? 'bg-slate-900 border-white/10 text-white' : 'bg-slate-800 text-white') : (activeCard === 'about' ? 'bg-[#D8B4FE] text-black' : 'bg-[#D8B4FE] text-black')}
+                  ${isDarkMode ? (activeCard === 'about' ? 'bg-slate-900 border-white/10 text-white' : 'bg-slate-800 text-white') : (activeCard === 'about' ? 'bg-[#4C3F91] text-white' : 'bg-[#4C3F91] text-white')}
                 `}
               >
                 <motion.div layout="position" className="flex justify-between items-start w-full">
@@ -796,9 +796,9 @@ export default function Page() {
                     <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-full mx-auto w-full pb-32 px-2">
                         <div className="flex flex-col gap-4 h-full">
                             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2 md:mb-4">The Mission</h2>
-                            <div className={`rounded-3xl p-4 md:p-6 min-h-[300px] flex-1 flex flex-col justify-end gap-3 shadow-inner ${isDarkMode ? 'bg-white/5' : 'bg-[#F5F5DC]/40'}`}>
+                            <div className={`rounded-3xl p-4 md:p-6 min-h-[300px] flex-1 flex flex-col justify-end gap-3 shadow-inner ${isDarkMode ? 'bg-white/5' : 'bg-white/5'}`}>
                                 {CHAT_MESSAGES.map((msg) => (
-                                    <motion.div key={msg.id} initial={{ opacity: 0, x: -20, scale: 0.9 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ delay: 0.4 + msg.delay, type: 'spring' }} className={`self-start px-5 py-3 rounded-2xl rounded-bl-none shadow-sm max-w-[90%] ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-[#F5F5DC] text-black'}`}>
+                                    <motion.div key={msg.id} initial={{ opacity: 0, x: -20, scale: 0.9 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ delay: 0.4 + msg.delay, type: 'spring' }} className={`self-start px-5 py-3 rounded-2xl rounded-bl-none shadow-sm max-w-[90%] ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-slate-800 text-white'}`}>
                                         <p className="text-base md:text-lg font-medium">{msg.text}</p>
                                     </motion.div>
                                 ))}
@@ -808,7 +808,7 @@ export default function Page() {
                                         value={chatInput}
                                         onChange={(e) => setChatInput(e.target.value)}
                                         placeholder="Write a message..."
-                                        className={`h-12 flex-1 rounded-full px-4 flex items-center text-sm md:text-base outline-none transition-colors border-2 border-transparent focus:border-[#10B981]/50 ${isDarkMode ? 'bg-white/10 text-white placeholder-white/50' : 'bg-[#F5F5DC]/60 text-black placeholder-black/50'}`}
+                                        className={`h-12 flex-1 rounded-full px-4 flex items-center text-sm md:text-base outline-none transition-colors border-2 border-transparent focus:border-[#10B981]/50 ${isDarkMode ? 'bg-white/10 text-white placeholder-white/50' : 'bg-white/10 text-white placeholder-white/50'}`}
                                     />
                                     <button 
                                         onClick={handleSendMessage}
