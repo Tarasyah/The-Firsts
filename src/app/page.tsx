@@ -356,7 +356,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
       </button>
 
       <div className={`absolute inset-0 pointer-events-none`}>
-        <div className={`absolute top-1/2 right-0 translate-x-1/3 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[120px] transition-colors duration-700 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
+        <div className={`absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rounded-full blur-[160px] transition-colors duration-700 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
       </div>
 
       <div className="absolute left-0 top-0 h-full w-20 md:w-24 lg:w-40 z-30 pointer-events-none">
@@ -792,9 +792,11 @@ export default function Page() {
                 transition={transitionSettings}
                 className={`
                   rounded-[32px] p-6 flex flex-col shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
-                  ${activeCard === 'about' ? 'fixed inset-0 z-50 rounded-none w-full h-full m-0 p-4 md:p-6 overflow-y-auto cursor-auto' : 'md:col-span-1 relative hover:scale-[0.98] justify-between'}
+                  ${activeCard === 'about' 
+                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-4 md:p-6 overflow-y-auto cursor-auto ${isDarkMode ? 'bg-[#2a0142] text-white' : 'bg-purple-50 text-purple-950'}` 
+                    : `md:col-span-1 relative hover:scale-[0.98] justify-between bg-[#7C02A2] text-white`
+                  }
                   ${activeCard === 'showreel' ? 'opacity-0 pointer-events-none' : 'opacity-100'} 
-                  bg-[#7C02A2] text-white
                 `}
               >
                 <motion.div layout="position" className="flex justify-between items-start w-full">
@@ -804,9 +806,9 @@ export default function Page() {
                     <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-full mx-auto w-full pb-32 px-2">
                         <div className="flex flex-col gap-4 h-full">
                             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2 md:mb-4">The Mission</h2>
-                            <div className="bg-white/20 rounded-3xl p-4 md:p-6 min-h-[300px] flex-1 flex flex-col justify-end gap-3 shadow-inner">
+                            <div className={`${isDarkMode ? 'bg-white/10' : 'bg-purple-200/60'} rounded-3xl p-4 md:p-6 min-h-[300px] flex-1 flex flex-col justify-end gap-3 shadow-inner`}>
                                 {CHAT_MESSAGES.map((msg) => (
-                                    <motion.div key={msg.id} initial={{ opacity: 0, x: -20, scale: 0.9 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ delay: 0.4 + msg.delay, type: 'spring' }} className="self-start bg-white px-5 py-3 rounded-2xl rounded-bl-none shadow-sm max-w-[90%] text-black">
+                                    <motion.div key={msg.id} initial={{ opacity: 0, x: -20, scale: 0.9 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ delay: 0.4 + msg.delay, type: 'spring' }} className={`self-start px-5 py-3 rounded-2xl rounded-bl-none shadow-sm max-w-[90%] ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-purple-950'}`}>
                                         <p className="text-base md:text-lg font-medium">{msg.text}</p>
                                     </motion.div>
                                 ))}
@@ -816,7 +818,7 @@ export default function Page() {
                                         value={chatInput}
                                         onChange={(e) => setChatInput(e.target.value)}
                                         placeholder="Write a message..."
-                                        className="h-12 flex-1 rounded-full px-4 flex items-center text-sm md:text-base outline-none transition-colors border-2 border-transparent focus:border-[#10B981]/50 bg-white/10 text-white placeholder-white/50"
+                                        className={`h-12 flex-1 rounded-full px-4 flex items-center text-sm md:text-base outline-none transition-colors border-2 border-transparent focus:border-[#10B981]/50 ${isDarkMode ? 'bg-white/10 text-white placeholder-white/50' : 'bg-purple-200 text-purple-950 placeholder-purple-950/60'}`}
                                     />
                                     <button 
                                         onClick={handleSendMessage}
@@ -830,15 +832,15 @@ export default function Page() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 4.8, duration: 0.5 }}
-                                className="rounded-2xl p-4 border backdrop-blur-sm mt-auto bg-gradient-to-br from-gray-900 to-black border-white/10"
+                                className={`rounded-2xl p-4 border backdrop-blur-sm mt-auto ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black border-white/10' : 'bg-purple-200/50 border-purple-900/10'}`}
                             >
                                 <div className="flex items-center gap-3 mb-3">
-                                    <span className="text-[10px] font-bold tracking-widest uppercase text-white/40">Content Source</span>
-                                    <div className="h-px flex-1 bg-white/10"></div>
+                                    <span className={`text-[10px] font-bold tracking-widest uppercase ${isDarkMode ? 'text-white/40' : 'text-purple-950/40'}`}>Content Source</span>
+                                    <div className={`h-px flex-1 ${isDarkMode ? 'bg-white/10' : 'bg-purple-900/10'}`}></div>
                                 </div>
-                                <YaqeenLogo className="h-8 md:h-12 w-auto mb-3 text-white" />
-                                <p className="text-xs leading-relaxed text-slate-300">
-                                    All historical content is sourced from the <strong><a href="https://www.youtube.com/playlist?list=PLQ02IYL5pmhHFl7j6wPcFTZmlQvRhsejp" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/80 transition-colors">"The Firsts"</a></strong> series by Yaqeen Institute.
+                                <YaqeenLogo className={`h-8 md:h-12 w-auto mb-3 ${isDarkMode ? 'text-white' : 'text-purple-950'}`} />
+                                <p className={`text-xs leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-purple-800'}`}>
+                                    All historical content is sourced from the <strong><a href="https://www.youtube.com/playlist?list=PLQ02IYL5pmhHFl7j6wPcFTZmlQvRhsejp" target="_blank" rel="noopener noreferrer" className={`underline ${isDarkMode ? 'hover:text-white/80' : 'hover:text-black'} transition-colors`}>"The Firsts"</a></strong> series by Yaqeen Institute.
                                     <br className="mb-2"/>
                                     <span className="italic block mt-1 opacity-80">
                                         "If you find any errors or have feedback, please feel free to contact me."
@@ -893,9 +895,11 @@ export default function Page() {
                 whileHover="hover"
                 className={`
                   rounded-[32px] p-6 flex flex-col justify-between shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
-                  ${activeCard === 'showreel' ? 'fixed inset-0 z-50 rounded-none w-full h-full m-0 p-0 overflow-y-auto cursor-auto' : 'md:col-span-1 relative'}
+                  ${activeCard === 'showreel' 
+                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-0 overflow-y-auto cursor-auto ${isDarkMode ? 'bg-[#0a1814] text-white' : 'bg-emerald-50 text-emerald-950'}` 
+                    : 'md:col-span-1 relative bg-[#1A3C34] text-white'
+                  }
                   ${activeCard === 'about' ? 'opacity-0 pointer-events-none' : 'opacity-100'}
-                  bg-[#1A3C34] text-white
                 `}
               >
                 {activeCard === 'showreel' ? (
@@ -907,7 +911,7 @@ export default function Page() {
                             initial={{ opacity: 0, y: -20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className={`text-4xl md:text-7xl font-headline font-bold mb-12 md:mb-16 text-center leading-tight mt-10 md:mt-0 text-white`}
+                            className={`text-4xl md:text-7xl font-headline font-bold mb-12 md:mb-16 text-center leading-tight mt-10 md:mt-0 ${isDarkMode ? 'text-white' : 'text-emerald-950'}`}
                         >
                             Choose who you<br/>want to be.
                         </motion.h2>
@@ -919,17 +923,17 @@ export default function Page() {
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 transition={{ delay: 0.4 + (i * 0.1), type: 'spring', stiffness: 100 }}
                                 whileHover={{ scale: 1.03, y: -5 }}
-                                className={`p-8 rounded-3xl border transition-all group/card flex flex-col relative overflow-hidden w-full md:w-[calc(50%-12px)] lg:w-[calc(33.33%-16px)] bg-white/5 border-white/10 hover:bg-white/10`}
+                                className={`p-8 rounded-3xl border transition-all group/card flex flex-col relative overflow-hidden w-full md:w-[calc(50%-12px)] lg:w-[calc(33.33%-16px)] ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-emerald-900/10 hover:bg-emerald-100'}`}
                             >
                                 <div className="absolute top-0 right-0 p-32 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover/card:bg-emerald-500/20 transition-colors"></div>
-                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-lg bg-gradient-to-br from-white/20 to-white/5 border border-white/10 text-emerald-300`}>
+                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-lg ${isDarkMode ? 'bg-gradient-to-br from-white/20 to-white/5 border border-white/10 text-emerald-300' : 'bg-gradient-to-br from-emerald-200 to-white border border-emerald-900/10 text-emerald-600'}`}>
                                     <def.icon size={28} />
                                 </div>
-                                <h3 className={`text-2xl font-bold mb-2 font-headline text-white`}>{def.title}</h3>
+                                <h3 className={`text-2xl font-bold mb-2 font-headline`}>{def.title}</h3>
                                 <div className="h-0.5 w-12 bg-emerald-500/50 mb-4 rounded-full"></div>
-                                <p className={`text-sm leading-relaxed mb-6 flex-1 font-medium text-emerald-100/90`}>{def.text}</p>
+                                <p className={`text-sm leading-relaxed mb-6 flex-1 font-medium ${isDarkMode ? 'text-emerald-100/90' : 'text-emerald-800/90'}`}>{def.text}</p>
                                 <div className="mt-auto pt-4 border-t border-white/5">
-                                    <span className="text-xs font-bold tracking-widest text-emerald-400 uppercase flex items-center gap-2">
+                                    <span className={`text-xs font-bold tracking-widest uppercase flex items-center gap-2 ${isDarkMode ? 'text-emerald-400' : 'text-emerald-600'}`}>
                                         <Sparkles size={12} /> {def.trait}
                                     </span>
                                 </div>
