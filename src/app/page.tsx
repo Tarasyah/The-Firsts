@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useRef, useEffect, useState, useMemo } from 'react';
@@ -353,8 +354,8 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
         <span className="font-bold text-xs uppercase tracking-widest hidden md:inline">HOME</span>
       </button>
 
-      <div className={`absolute inset-0 pointer-events-none transition-colors duration-1000`}>
-        <div className={`absolute top-1/2 right-0 translate-x-1/3 -translate-y-1/2 w-[600px] h-[600px] md:w-[800px] md:h-[800px] rounded-full blur-[120px] transition-colors duration-700 ${active.color.replace('text-', 'bg-')}`} style={{ opacity: isDarkMode ? 0.3 : 0.2 }} />
+      <div className={`absolute inset-0 pointer-events-none -z-10`}>
+        <div className={`absolute inset-0 m-auto w-[600px] h-[600px] rounded-full blur-[120px] transition-colors duration-700 ${active.color.replace('text-', 'bg-')}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
       </div>
 
       <div className="absolute left-0 top-0 h-full w-20 md:w-24 lg:w-40 z-30 pointer-events-none">
@@ -648,7 +649,6 @@ export default function Page() {
     </svg>
   );
 
-  const MAIN_TITLE = "THE FIRSTS";
   const SUBTITLE = "Stories of the Prophet's Companions";
 
   return (
@@ -803,7 +803,7 @@ export default function Page() {
                     <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-full mx-auto w-full pb-32 px-2">
                         <div className="flex flex-col gap-4 h-full">
                             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2 md:mb-4">The Mission</h2>
-                            <div className={`rounded-3xl p-4 md:p-6 min-h-[300px] flex-1 flex flex-col justify-end gap-3 shadow-inner ${isDarkMode ? 'bg-white/5' : 'bg-white/5'}`}>
+                            <div className={`rounded-3xl p-4 md:p-6 min-h-[300px] flex-1 flex flex-col justify-end gap-3 shadow-inner ${isDarkMode ? 'bg-white/5' : 'bg-white/10'}`}>
                                 {CHAT_MESSAGES.map((msg) => (
                                     <motion.div key={msg.id} initial={{ opacity: 0, x: -20, scale: 0.9 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ delay: 0.4 + msg.delay, type: 'spring' }} className={`self-start px-5 py-3 rounded-2xl rounded-bl-none shadow-sm max-w-[90%] ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-slate-800 text-white'}`}>
                                         <p className="text-base md:text-lg font-medium">{msg.text}</p>
@@ -966,10 +966,8 @@ export default function Page() {
               >
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-1000" />
                   <div className="flex flex-col items-center z-10 relative p-4">
-                      <h1
-                        className="font-headline font-medium text-amber-500 md:text-neutral-800 transition-all duration-700 ease-out md:group-hover:-translate-y-2 md:group-hover:text-amber-100 md:group-hover:blur-0 blur-0 md:blur-[2px] md:group-hover:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)] text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] md:tracking-[0.3em]"
-                      >
-                        {MAIN_TITLE}
+                  <h1 className="font-headline font-medium text-amber-500 md:text-neutral-800 transition-all duration-700 ease-out md:group-hover:-translate-y-2 md:group-hover:text-amber-100 md:group-hover:blur-0 blur-0 md:blur-[2px] md:group-hover:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)] text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] md:tracking-[0.3em]">
+                        THE FIRSTS
                       </h1>
                       <div className="transition-all duration-1000 delay-300 opacity-100 md:opacity-0 md:group-hover:opacity-100 translate-y-0 md:translate-y-2 md:group-hover:translate-y-0 blur-0 md:blur-sm md:group-hover:blur-none mt-4 border-t border-amber-500/50 pt-3 w-full max-w-sm">
                         <p className="text-[10px] md:text-xs text-amber-500/80 font-body tracking-[0.3em] uppercase">
