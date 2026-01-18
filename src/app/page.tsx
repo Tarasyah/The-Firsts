@@ -13,6 +13,7 @@ import {
   Search
 } from 'lucide-react';
 import { cn } from "@/lib/utils"
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Import data from JSON files
 import theForerunners from '@/data/The Forerunners.json';
@@ -22,11 +23,11 @@ import theRevivers from '@/data/The Revivers.json';
 import theDistinguished from '@/data/The Distinguished.json';
 
 // Import images from the root directory
-import forerunnersImg from '../../Image Cover/Forerunners.png';
-import trendsettersImg from '../../Image Cover/Trendsetters.png';
-import strangersImg from '../../Image Cover/Strangers.png';
-import reviversImg from '../../Image Cover/Revivers.png';
-import distinguishedImg from '../../Image Cover/Distinguished.png';
+import forerunnersImg from '../../Image Cover/Forerunners.webp';
+import trendsettersImg from '../../Image Cover/Trendsetters.webp';
+import strangersImg from '../../Image Cover/Strangers.webp';
+import reviversImg from '../../Image Cover/Revivers.webp';
+import distinguishedImg from '../../Image Cover/Distinguished.webp';
 
 
 // Extend the Window interface for the pendingCompanion hack
@@ -422,10 +423,6 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
         </div>
       </div>
 
-      <div className={`absolute bottom-8 left-8 text-[10px] uppercase tracking-widest font-mono ${isDarkMode ? 'text-slate-700' : 'text-slate-500'}`}>
-        {String(activeIndex + 1).padStart(2, '0')} / {DATA.length}
-      </div>
-
       {state.showModal && (
         <div className={`fixed inset-0 z-[110] flex items-center justify-center p-4 backdrop-blur-sm animate-fadeIn ${modalOverlay}`} onPointerDown={e => e.stopPropagation()} onWheel={e => e.stopPropagation()}>
           <div className={`border rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative shadow-2xl p-6 md:p-8 animate-scaleIn ${modalBg}`}>
@@ -535,6 +532,7 @@ export default function Page() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [initialCompanionId, setInitialCompanionId] = useState<number | null>(null);
   const [isFirstsCardRevealed, setIsFirstsCardRevealed] = useState(false);
+  const isMobile = useIsMobile();
 
   const duplicatedItems = [...CATEGORIES, ...CATEGORIES, ...CATEGORIES];
   const [singleScreenWidth, setSingleScreenWidth] = useState(0);
@@ -579,15 +577,20 @@ export default function Page() {
 
   const handleCardClick = (item: any) => {
     if (transitionMode) return;
-    setTransitionColor(item.color);
-    setTransitionTextData(item);
-    setTransitionMode('enter');
+    window.pendingCompanion = item;
+    if (isMobile) {
+        setSelectedCompanion(item);
+        window.pendingCompanion = null;
+    } else {
+        setTransitionColor(item.color);
+        setTransitionTextData(item);
+        setTransitionMode('enter');
+    }
   };
   
   const handleCategoryCardClick = (item: any) => {
     setIsSearchOpen(false);
     setInitialCompanionId(null);
-    window.pendingCompanion = item;
     handleCardClick(item);
   };
   
@@ -602,8 +605,12 @@ export default function Page() {
     }
     if (parentCategory) {
         setInitialCompanionId(companionId);
-        window.pendingCompanion = parentCategory;
-        handleCardClick(parentCategory);
+        if (isMobile) {
+            setSelectedCompanion(parentCategory);
+        } else {
+            window.pendingCompanion = parentCategory;
+            handleCardClick(parentCategory);
+        }
     }
     setSearchQuery("");
     setSearchResults([]);
@@ -612,10 +619,15 @@ export default function Page() {
 
   const handleCloseDetail = () => {
     if (transitionMode) return;
-    setTransitionColor(selectedCompanion?.color || '#000');
-    setTransitionTextData(null);
-    setTransitionMode('exit');
-    setInitialCompanionId(null);
+     if (isMobile) {
+        setSelectedCompanion(null);
+        setInitialCompanionId(null);
+    } else {
+        setTransitionColor(selectedCompanion?.color || '#000');
+        setTransitionTextData(null);
+        setTransitionMode('exit');
+        setInitialCompanionId(null);
+    }
   };
 
   const handleSendMessage = () => {
@@ -661,7 +673,10 @@ export default function Page() {
       <GlobalStyles />
       <MosaicBackground isDarkMode={isDarkMode} />
 
-      <div className={`fixed top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-end gap-2`}>
+      <div className={cn(
+        "fixed top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-end gap-2",
+        selectedCompanion && "hidden"
+      )}>
          <div className={`flex items-center p-1.5 rounded-full transition-all duration-300 shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/50 border-white/10' : 'bg-[#F5F5DC]/50 border-black/5'}`}>
             <button 
               onClick={() => setIsDarkMode(!isDarkMode)}
@@ -720,7 +735,7 @@ export default function Page() {
         </div>
         
         <AnimatePresence>
-          {!activeCard && isSearchOpen && searchResults.length > 0 && (
+          {!activeCard && !selectedCompanion && isSearchOpen && searchResults.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -785,7 +800,38 @@ export default function Page() {
           >
             <div className="max-w-[98%] w-full mb-8 px-2 md:px-4 grid grid-cols-1 md:grid-cols-4 gap-4 h-auto md:h-56 relative z-10">
               <motion.div
-                layout
+                className={`
+                  order-2 md:order-1
+                  md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer
+                  ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
+                  bg-black border border-neutral-800
+                `}
+                onMouseEnter={() => setIsFirstsCardRevealed(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsFirstsCardRevealed(false);
+                }}
+              >
+                  <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black transition-opacity duration-1000", isFirstsCardRevealed ? 'opacity-100' : 'opacity-100 md:opacity-0')} />
+                  <div className="flex flex-col items-center z-10 relative p-4">
+                      <h1 className={cn(
+                        "font-headline font-medium text-amber-500 md:text-neutral-800 transition-all duration-700 ease-out text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] md:tracking-[0.3em]",
+                        isFirstsCardRevealed ? "md:-translate-y-2 md:text-amber-100 md:blur-0 md:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]" : "blur-0 md:blur-[2px]"
+                      )}>
+                        THE FIRSTS
+                      </h1>
+                      <div className={cn(
+                        "transition-all duration-1000 delay-300 mt-4 border-t border-amber-500/50 pt-3 w-full max-w-sm",
+                        isFirstsCardRevealed ? "opacity-100 translate-y-0 blur-none" : "opacity-100 md:opacity-0 translate-y-0 md:translate-y-2 blur-0 md:blur-sm"
+                      )}>
+                        <p className="text-[10px] md:text-xs text-amber-500/80 font-body tracking-[0.3em] uppercase">
+                          {SUBTITLE}
+                        </p>
+                      </div>
+                  </div>
+              </motion.div>
+              <motion.div
+                layout={!isMobile}
                 onClick={() => {
                   if (activeCard !== 'about') {
                     setActiveCard('about');
@@ -795,7 +841,7 @@ export default function Page() {
                 data-is-expanded={activeCard === 'about'}
                 transition={transitionSettings}
                 className={`
-                  order-2 md:order-1
+                  order-1 md:order-2
                   rounded-[32px] p-6 flex flex-col shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
                   ${activeCard === 'about' 
                     ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-4 md:p-6 overflow-y-auto cursor-auto ${isDarkMode ? 'bg-purple-950 text-white' : 'bg-purple-100 text-purple-950'}` 
@@ -811,17 +857,20 @@ export default function Page() {
                     <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-full mx-auto w-full pb-32 px-2">
                         <div className="flex flex-col gap-4 h-full">
                             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2 md:mb-4">The Mission</h2>
-                            <div className={`${isDarkMode ? 'bg-white/5' : 'bg-purple-200/50'} rounded-3xl p-4 md:p-6 min-h-[300px] flex-1 flex flex-col justify-end gap-3 shadow-inner`}>
-                                {CHAT_MESSAGES.map((msg) => (
-                                    <motion.div key={msg.id} initial={{ opacity: 0, x: -20, scale: 0.9 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ delay: 0.4 + msg.delay, type: 'spring' }} className={`self-start px-5 py-3 rounded-2xl rounded-bl-none shadow-sm max-w-[90%] ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-purple-950'}`}>
-                                        <p className="text-base md:text-lg font-medium">{msg.text}</p>
-                                    </motion.div>
-                                ))}
-                                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4.5 }} className="mt-4 flex gap-2">
+                            <div className={`${isDarkMode ? 'bg-white/5' : 'bg-purple-200/50'} rounded-3xl p-4 md:p-6 flex-1 flex flex-col gap-3 shadow-inner`}>
+                                <div className="flex-1">
+                                    {CHAT_MESSAGES.map((msg) => (
+                                        <motion.div key={msg.id} initial={{ opacity: 0, x: -20, scale: 0.9 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ delay: 0.4 + msg.delay, type: 'spring' }} className={`self-start px-5 py-3 mb-3 rounded-2xl rounded-bl-none shadow-sm max-w-[90%] ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-purple-950'}`}>
+                                            <p className="text-base md:text-lg font-medium">{msg.text}</p>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4.5 }} className="mt-auto flex gap-2">
                                     <input 
                                         type="text"
                                         value={chatInput}
                                         onChange={(e) => setChatInput(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                                         placeholder="Write a message..."
                                         className={`h-12 flex-1 rounded-full px-4 flex items-center text-sm md:text-base outline-none transition-colors border-2 border-transparent focus:border-[#10B981]/50 ${isDarkMode ? 'bg-white/10 text-white placeholder-white/50' : 'bg-purple-200/90 text-purple-950 placeholder-purple-950/60'}`}
                                     />
@@ -831,7 +880,7 @@ export default function Page() {
                                     >
                                         <Send size={20} />
                                     </button>
-                                  </motion.div>
+                                </motion.div>
                             </div>
                             <motion.div 
                                 initial={{ opacity: 0, y: 20 }}
@@ -887,7 +936,7 @@ export default function Page() {
               </motion.div>
 
               <motion.div
-                layout
+                layout={!isMobile}
                 onClick={() => {
                   if (activeCard !== 'showreel') {
                     setActiveCard('showreel');
@@ -899,7 +948,7 @@ export default function Page() {
                 initial="initial"
                 whileHover="hover"
                 className={`
-                  order-3 md:order-2
+                  order-3 md:order-3
                   rounded-[32px] p-6 flex flex-col justify-between shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
                   ${activeCard === 'showreel' 
                     ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-0 overflow-y-auto cursor-auto ${isDarkMode ? 'bg-emerald-950 text-white' : 'bg-emerald-100 text-emerald-950'}` 
@@ -966,38 +1015,6 @@ export default function Page() {
                         </motion.div>
                     </>
                 )}
-              </motion.div>
-
-              <motion.div
-                className={`
-                  order-1 md:order-3
-                  md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer
-                  ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
-                  bg-black border border-neutral-800
-                `}
-                onMouseEnter={() => setIsFirstsCardRevealed(true)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsFirstsCardRevealed(false);
-                }}
-              >
-                  <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black transition-opacity duration-1000", isFirstsCardRevealed ? 'opacity-100' : 'opacity-100 md:opacity-0')} />
-                  <div className="flex flex-col items-center z-10 relative p-4">
-                      <h1 className={cn(
-                        "font-headline font-medium text-amber-500 md:text-neutral-800 transition-all duration-700 ease-out text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] md:tracking-[0.3em]",
-                        isFirstsCardRevealed ? "md:-translate-y-2 md:text-amber-100 md:blur-0 md:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]" : "blur-0 md:blur-[2px]"
-                      )}>
-                        THE FIRSTS
-                      </h1>
-                      <div className={cn(
-                        "transition-all duration-1000 delay-300 mt-4 border-t border-amber-500/50 pt-3 w-full max-w-sm",
-                        isFirstsCardRevealed ? "opacity-100 translate-y-0 blur-none" : "opacity-100 md:opacity-0 translate-y-0 md:translate-y-2 blur-0 md:blur-sm"
-                      )}>
-                        <p className="text-[10px] md:text-xs text-amber-500/80 font-body tracking-[0.3em] uppercase">
-                          {SUBTITLE}
-                        </p>
-                      </div>
-                  </div>
               </motion.div>
             </div>
 
