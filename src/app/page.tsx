@@ -428,7 +428,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
         <div className={`fixed inset-0 z-[110] flex items-center justify-center p-4 backdrop-blur-sm animate-fadeIn ${modalOverlay}`} onPointerDown={e => e.stopPropagation()} onWheel={e => e.stopPropagation()}>
           <div className={`border rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative shadow-2xl p-6 md:p-8 animate-scaleIn ${modalBg}`}>
             <button onClick={() => setState(p => ({ ...p, showModal: false }))} className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-black/10'}`}>
-                <X className={`w-6 h-6 ${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-400 hover:text-black'}`} />
+                <X className={`w-6 h-6 ${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-black'}`} />
             </button>
             <div className="flex flex-col gap-6">
               <div className={`flex items-center gap-4 border-b pb-6 ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
@@ -654,7 +654,7 @@ export default function Page() {
   const SUBTITLE = "Stories of the Prophet's Companions";
 
   return (
-    <div className={`min-h-screen overflow-hidden flex flex-col justify-start pt-12 md:pt-20 p-2 md:p-4 font-body relative transition-colors duration-500 ${mainTextClass}`}>
+    <div className={`min-h-screen overflow-hidden flex flex-col justify-start pt-12 md:pt-16 p-2 md:p-4 font-body relative transition-colors duration-500 ${mainTextClass}`}>
       <GlobalStyles />
       <MosaicBackground isDarkMode={isDarkMode} />
 
@@ -780,7 +780,7 @@ export default function Page() {
             transition={{ duration: 0.5 }}
             className="flex-1 flex flex-col"
           >
-            <div className="max-w-[98%] w-full mb-8 px-2 md:px-4 grid grid-cols-1 md:grid-cols-4 gap-4 h-auto md:h-64 relative z-10">
+            <div className="max-w-[98%] w-full mb-8 px-2 md:px-4 grid grid-cols-1 md:grid-cols-4 gap-4 h-auto md:h-56 relative z-10">
               <motion.div
                 layout
                 onClick={() => {
@@ -907,7 +907,7 @@ export default function Page() {
               >
                 {activeCard === 'showreel' ? (
                     <div 
-                        className="flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-24 pb-48 px-4 md:px-8"
+                        className={`flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-24 pb-64 px-4 md:px-8`}
                         onClick={(e) => e.stopPropagation()} 
                     >
                         <motion.h2 
@@ -1003,7 +1003,7 @@ export default function Page() {
                   <motion.div
                     key={`${item.id}-${index}`}
                     onClick={() => handleCategoryCardClick(item)}
-                    className={`relative flex-shrink-0 w-[280px] h-[400px] rounded-[32px] overflow-hidden group shadow-xl cursor-pointer transition-colors duration-300 ${cardBgClass}`}
+                    className={`relative flex-shrink-0 w-[280px] h-[360px] rounded-[32px] overflow-hidden group shadow-xl cursor-pointer transition-colors duration-300 ${cardBgClass}`}
                     whileHover={{ scale: 0.98 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   >
