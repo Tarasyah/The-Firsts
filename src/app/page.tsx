@@ -38,15 +38,15 @@ declare global {
 /* DATA MAPPING & CONFIG                                                      */
 /* -------------------------------------------------------------------------- */
 
-const CATEGORY_STYLES: { [key: string]: { icon: React.ElementType; color: string } } = {
-  '(The Forerunners)': { icon: Crown, color: "text-emerald-400" },
-  '(The Trendsetters)': { icon: Flag, color: "text-amber-400" },
-  '(The Strangers)': { icon: Moon, color: "text-indigo-400" },
-  '(The Strangers )': { icon: Moon, color: "text-indigo-400" },
-  '(The Revivers)': { icon: Zap, color: "text-cyan-400" },
-  '(The Revivers )': { icon: Zap, color: "text-cyan-400" },
-  '(The Distinguished)': { icon: Star, color: "text-pink-400" },
-  'default': { icon: Target, color: 'text-slate-400'}
+const CATEGORY_STYLES: { [key: string]: { icon: React.ElementType; color: string; bgColor: string; } } = {
+  '(The Forerunners)': { icon: Crown, color: "text-emerald-400", bgColor: "bg-emerald-400" },
+  '(The Trendsetters)': { icon: Flag, color: "text-amber-400", bgColor: "bg-amber-400" },
+  '(The Strangers)': { icon: Moon, color: "text-indigo-400", bgColor: "bg-indigo-400" },
+  '(The Strangers )': { icon: Moon, color: "text-indigo-400", bgColor: "bg-indigo-400" },
+  '(The Revivers)': { icon: Zap, color: "text-cyan-400", bgColor: "bg-cyan-400" },
+  '(The Revivers )': { icon: Zap, color: "text-cyan-400", bgColor: "bg-cyan-400" },
+  '(The Distinguished)': { icon: Star, color: "text-pink-400", bgColor: "bg-pink-400" },
+  'default': { icon: Target, color: 'text-slate-400', bgColor: 'bg-slate-400' }
 };
 
 const ALL_RAW_DATA = [
@@ -65,6 +65,7 @@ const ALL_COMPANIONS_DATA = ALL_RAW_DATA.map((item, index) => {
       subtitle: item.Title,
       icon: style.icon,
       color: style.color,
+      bgColor: style.bgColor,
       youtube: item["YouTube Title"],
       reason: item["Reason behind the Title"],
       desc: item["Lives Summary"],
@@ -355,7 +356,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
       </button>
 
       <div className={`absolute inset-0 pointer-events-none`}>
-        <div className={`absolute inset-0 m-auto w-[600px] h-[600px] rounded-full blur-[120px] transition-colors duration-700 ${active.color.replace('text-', 'bg-')}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
+        <div className={`absolute inset-0 m-auto w-[600px] h-[600px] rounded-full blur-[120px] transition-colors duration-700 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
       </div>
 
       <div className="absolute left-0 top-0 h-full w-20 md:w-24 lg:w-40 z-30 pointer-events-none">
@@ -407,7 +408,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
 
           <h2 className={`text-sm md:text-xl font-bold tracking-widest uppercase mb-2 animate-slideInRight ${active.color}`}>{active.subtitle}</h2>
           <h1 className="text-3xl md:text-6xl lg:text-7xl font-black mb-4 tracking-tighter leading-none animate-slideInRight drop-shadow-2xl font-headline">{active.title}</h1>
-          <div className="flex justify-end mb-8 w-full"><div className={`h-1 w-16 md:w-24 rounded-full overflow-hidden ${isDarkMode ? 'bg-slate-800' : 'bg-black/10'}`}><div className={`h-full ${active.color.replace('text-', 'bg-')} w-full animate-progress origin-left`} /></div></div>
+          <div className="flex justify-end mb-8 w-full"><div className={`h-1 w-16 md:w-24 rounded-full overflow-hidden ${isDarkMode ? 'bg-slate-800' : 'bg-black/10'}`}><div className={`h-full ${active.bgColor} w-full animate-progress origin-left`} /></div></div>
           <p className={`text-sm md:text-lg font-light leading-relaxed mb-10 animate-slideInRight delay-100 ${subTextClass}`}>{active.desc}</p>
           <div className="flex justify-end animate-slideInRight delay-200">
             <button onPointerDown={e => e.stopPropagation()} onClick={() => setState(p => ({ ...p, showModal: true }))}
@@ -430,7 +431,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
             </button>
             <div className="flex flex-col gap-6">
               <div className={`flex items-center gap-4 border-b pb-6 ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
-                <div className={`p-4 rounded-xl ${active.color.replace('text-', 'bg-')}/20`}><active.icon className={`w-8 h-8 ${active.color}`} /></div>
+                <div className={`p-4 rounded-xl ${active.bgColor}/20`}><active.icon className={`w-8 h-8 ${active.color}`} /></div>
                 <div><h2 className={`text-sm font-bold tracking-widest uppercase ${active.color}`}>{active.subtitle}</h2><h1 className={`text-2xl md:text-4xl font-black font-headline ${modalTextMain}`}>{active.title}</h1></div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1019,3 +1020,5 @@ export default function Page() {
     </div>
   );
 };
+
+    
