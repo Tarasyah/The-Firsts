@@ -363,7 +363,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
       </div>
 
 
-      <div className="absolute left-0 top-0 h-full w-20 md:w-24 lg:w-40 z-30 pointer-events-none">
+      <div className={cn("absolute left-0 top-0 h-full w-20 md:w-24 lg:w-40 z-30 pointer-events-none", state.showModal && "hidden")}>
         <div className="absolute top-1/2 w-full h-0">
           {visibleItems.map(({ id, data, angle }) => {
             if (!data) return null;
@@ -578,14 +578,9 @@ export default function Page() {
   const handleCardClick = (item: any) => {
     if (transitionMode) return;
     window.pendingCompanion = item;
-    if (isMobile) {
-        setSelectedCompanion(item);
-        window.pendingCompanion = null;
-    } else {
-        setTransitionColor(item.color);
-        setTransitionTextData(item);
-        setTransitionMode('enter');
-    }
+    setTransitionColor(item.color);
+    setTransitionTextData(item);
+    setTransitionMode('enter');
   };
   
   const handleCategoryCardClick = (item: any) => {
@@ -605,12 +600,8 @@ export default function Page() {
     }
     if (parentCategory) {
         setInitialCompanionId(companionId);
-        if (isMobile) {
-            setSelectedCompanion(parentCategory);
-        } else {
-            window.pendingCompanion = parentCategory;
-            handleCardClick(parentCategory);
-        }
+        window.pendingCompanion = parentCategory;
+        handleCardClick(parentCategory);
     }
     setSearchQuery("");
     setSearchResults([]);
@@ -619,15 +610,10 @@ export default function Page() {
 
   const handleCloseDetail = () => {
     if (transitionMode) return;
-     if (isMobile) {
-        setSelectedCompanion(null);
-        setInitialCompanionId(null);
-    } else {
-        setTransitionColor(selectedCompanion?.color || '#000');
-        setTransitionTextData(null);
-        setTransitionMode('exit');
-        setInitialCompanionId(null);
-    }
+    setTransitionColor(selectedCompanion?.color || '#000');
+    setTransitionTextData(null);
+    setTransitionMode('exit');
+    setInitialCompanionId(null);
   };
 
   const handleSendMessage = () => {
@@ -652,6 +638,8 @@ export default function Page() {
 
   const mainTextClass = isDarkMode ? 'text-white' : 'text-black';
   const cardBgClass = isDarkMode ? 'bg-slate-900 border border-white/10' : 'bg-[#F5F5DC]';
+  const aboutCardBg = isDarkMode ? 'bg-purple-950 text-white' : 'bg-purple-100 text-purple-950';
+  const identityCardBg = isDarkMode ? 'bg-emerald-950 text-white' : 'bg-emerald-100 text-emerald-950';
 
   const YaqeenLogo = ({ className }: { className?: string }) => (
     <svg viewBox="0 0 400 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -801,7 +789,6 @@ export default function Page() {
             <div className="max-w-[98%] w-full mb-8 px-2 md:px-4 grid grid-cols-1 md:grid-cols-4 gap-4 h-auto md:h-56 relative z-10">
               <motion.div
                 className={`
-                  order-2 md:order-1
                   md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer
                   ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
                   bg-black border border-neutral-800
@@ -841,10 +828,9 @@ export default function Page() {
                 data-is-expanded={activeCard === 'about'}
                 transition={transitionSettings}
                 className={`
-                  order-1 md:order-2
                   rounded-[32px] p-6 flex flex-col shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
                   ${activeCard === 'about' 
-                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-4 md:p-6 overflow-y-auto cursor-auto ${isDarkMode ? 'bg-purple-950 text-white' : 'bg-purple-100 text-purple-950'}` 
+                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-4 md:p-6 overflow-y-auto cursor-auto ${aboutCardBg}` 
                     : `md:col-span-1 relative hover:scale-[0.98] justify-between bg-[#7C02A2] text-white`
                   }
                   ${activeCard === 'showreel' ? 'opacity-0 pointer-events-none' : 'opacity-100'} 
@@ -858,14 +844,14 @@ export default function Page() {
                         <div className="flex flex-col gap-4 h-full">
                             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2 md:mb-4">The Mission</h2>
                             <div className={`${isDarkMode ? 'bg-white/5' : 'bg-purple-200/50'} rounded-3xl p-4 md:p-6 flex-1 flex flex-col gap-3 shadow-inner`}>
-                                <div className="flex-1">
+                                <div className="flex-1 overflow-y-auto">
                                     {CHAT_MESSAGES.map((msg) => (
                                         <motion.div key={msg.id} initial={{ opacity: 0, x: -20, scale: 0.9 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ delay: 0.4 + msg.delay, type: 'spring' }} className={`self-start px-5 py-3 mb-3 rounded-2xl rounded-bl-none shadow-sm max-w-[90%] ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-purple-950'}`}>
                                             <p className="text-base md:text-lg font-medium">{msg.text}</p>
                                         </motion.div>
                                     ))}
                                 </div>
-                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4.5 }} className="mt-auto flex gap-2">
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4.5 }} className="mt-auto flex gap-2 p-2 md:p-0">
                                     <input 
                                         type="text"
                                         value={chatInput}
@@ -904,7 +890,7 @@ export default function Page() {
                         </div>
                         <div className="flex flex-col gap-6">
                             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2">The Categories</h2>
-                            <div className="grid gap-3">
+                            <div className="grid gap-3 mb-12">
                                 {DEFINITIONS.map((def, idx) => {
                                     const colors = [ "bg-emerald-500", "bg-amber-500", "bg-indigo-500", "bg-cyan-500", "bg-pink-500" ];
                                     return (
@@ -948,10 +934,9 @@ export default function Page() {
                 initial="initial"
                 whileHover="hover"
                 className={`
-                  order-3 md:order-3
                   rounded-[32px] p-6 flex flex-col justify-between shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
                   ${activeCard === 'showreel' 
-                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-0 overflow-y-auto cursor-auto ${isDarkMode ? 'bg-emerald-950 text-white' : 'bg-emerald-100 text-emerald-950'}` 
+                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-0 overflow-y-auto cursor-auto ${identityCardBg}` 
                     : 'md:col-span-1 relative bg-[#1A3C34] text-white'
                   }
                   ${activeCard === 'about' ? 'opacity-0 pointer-events-none' : 'opacity-100'}
