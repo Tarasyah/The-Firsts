@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import React, { useRef, useEffect, useState, useMemo } from 'react';
@@ -11,6 +12,7 @@ import {
   Droplet, Cloud, Eye, Compass, Map, Flag, Youtube, Target, RefreshCw as RefreshCwIcon,
   Search
 } from 'lucide-react';
+import { cn } from "@/lib/utils"
 
 // Import data from JSON files
 import theForerunners from '@/data/The Forerunners.json';
@@ -532,6 +534,7 @@ export default function Page() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [initialCompanionId, setInitialCompanionId] = useState<number | null>(null);
+  const [isFirstsCardRevealed, setIsFirstsCardRevealed] = useState(false);
 
   const duplicatedItems = [...CATEGORIES, ...CATEGORIES, ...CATEGORIES];
   const [singleScreenWidth, setSingleScreenWidth] = useState(0);
@@ -968,17 +971,28 @@ export default function Page() {
               <motion.div
                 className={`
                   order-1 md:order-3
-                  md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 group cursor-pointer
-                  ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100 hover:scale-[0.98]'}
+                  md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer
+                  ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
                   bg-black border border-neutral-800
                 `}
+                onMouseEnter={() => setIsFirstsCardRevealed(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsFirstsCardRevealed(false);
+                }}
               >
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-1000" />
+                  <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black transition-opacity duration-1000", isFirstsCardRevealed ? 'opacity-100' : 'opacity-100 md:opacity-0')} />
                   <div className="flex flex-col items-center z-10 relative p-4">
-                      <h1 className="font-headline font-medium text-amber-500 md:text-neutral-800 transition-all duration-700 ease-out md:group-hover:-translate-y-2 md:group-hover:text-amber-100 md:group-hover:blur-0 blur-0 md:blur-[2px] md:group-hover:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)] text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] md:tracking-[0.3em]">
+                      <h1 className={cn(
+                        "font-headline font-medium text-amber-500 md:text-neutral-800 transition-all duration-700 ease-out text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] md:tracking-[0.3em]",
+                        isFirstsCardRevealed ? "md:-translate-y-2 md:text-amber-100 md:blur-0 md:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]" : "blur-0 md:blur-[2px]"
+                      )}>
                         THE FIRSTS
                       </h1>
-                      <div className="transition-all duration-1000 delay-300 opacity-100 md:opacity-0 md:group-hover:opacity-100 translate-y-0 md:translate-y-2 md:group-hover:translate-y-0 blur-0 md:blur-sm md:group-hover:blur-none mt-4 border-t border-amber-500/50 pt-3 w-full max-w-sm">
+                      <div className={cn(
+                        "transition-all duration-1000 delay-300 mt-4 border-t border-amber-500/50 pt-3 w-full max-w-sm",
+                        isFirstsCardRevealed ? "opacity-100 translate-y-0 blur-none" : "opacity-100 md:opacity-0 translate-y-0 md:translate-y-2 blur-0 md:blur-sm"
+                      )}>
                         <p className="text-[10px] md:text-xs text-amber-500/80 font-body tracking-[0.3em] uppercase">
                           {SUBTITLE}
                         </p>
