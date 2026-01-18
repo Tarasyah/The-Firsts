@@ -354,7 +354,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
         <span className="font-bold text-xs uppercase tracking-widest hidden md:inline">HOME</span>
       </button>
 
-      <div className={`absolute inset-0 pointer-events-none -z-10`}>
+      <div className={`absolute inset-0 pointer-events-none`}>
         <div className={`absolute inset-0 m-auto w-[600px] h-[600px] rounded-full blur-[120px] transition-colors duration-700 ${active.color.replace('text-', 'bg-')}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
       </div>
 
