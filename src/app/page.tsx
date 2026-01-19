@@ -361,12 +361,12 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
         <span className="font-bold text-xs uppercase tracking-widest hidden md:inline">HOME</span>
       </button>
 
-      <div className={`absolute inset-y-0 right-0 w-1/2 pointer-events-none`}>
-          <div className={`absolute inset-0 rounded-full blur-[160px] transition-colors duration-700 transform scale-y-150 scale-x-125 translate-x-1/2 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
+      <div className={`absolute inset-y-0 right-0 w-2/3 pointer-events-none`}>
+          <div className={`absolute inset-0 rounded-full blur-[200px] transition-colors duration-700 transform scale-y-[2.0] scale-x-150 translate-x-1/3 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
       </div>
 
 
-      {layout.mode !== 'mobile' && (
+      {layout.mode !== 'mobile' && !state.showModal && (
         <div className={cn("absolute left-0 top-0 h-full w-20 md:w-24 lg:w-40 z-30 pointer-events-none", state.showModal && "hidden")}>
           <div className="absolute top-1/2 w-full h-0">
             {visibleItems.map(({ id, data, angle }) => {
@@ -599,17 +599,11 @@ export default function Page() {
   };
   
   const handleCategoryCardClick = (item: any) => {
-    if (isMobile) {
-        setIsSearchOpen(false);
-        setInitialCompanionId(null);
-        handleCardClick(item, true);
-    } else {
-      if (transitionMode) return;
-      window.pendingCompanion = item;
-      setTransitionColor(item.color);
-      setTransitionTextData(item);
-      setTransitionMode('enter');
-    }
+    if (transitionMode) return;
+    window.pendingCompanion = item;
+    setTransitionColor(item.color);
+    setTransitionTextData(item);
+    setTransitionMode('enter');
   };
   
   const handleSearchResultClick = (companion: any) => {
@@ -623,12 +617,7 @@ export default function Page() {
     }
     if (parentCategory) {
         setInitialCompanionId(companionId);
-        if (isMobile) {
-            handleCardClick(parentCategory, true);
-        } else {
-            window.pendingCompanion = parentCategory;
-            handleCardClick(parentCategory, true);
-        }
+        handleCardClick(parentCategory, true);
     }
     setSearchQuery("");
     setSearchResults([]);
@@ -638,9 +627,6 @@ export default function Page() {
   const handleCloseDetail = () => {
     if (transitionMode) return;
     setTransitionColor(selectedCompanion?.color || '#000');
-    if (!isMobile) {
-      setTransitionTextData(null);
-    }
     setTransitionMode('exit');
     setInitialCompanionId(null);
   };
@@ -690,99 +676,99 @@ export default function Page() {
       <GlobalStyles />
       <MosaicBackground isDarkMode={isDarkMode} />
 
-      <AnimatePresence>
-        {!selectedCompanion && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-end gap-2"
-          >
-            <div className={`flex items-center p-1.5 rounded-full transition-all duration-300 shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/50 border-white/10' : 'bg-[#F5F5DC]/50 border-black/5'}`}>
-              <button 
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-yellow-400 hover:bg-white/10' : 'text-slate-700 hover:bg-black/5'}`}
-              >
-                {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-              </button>
-              
-              {activeCard ? (
-                  <AnimatePresence>
-                      <motion.div
-                          initial={{ width: 0, opacity: 0 }}
-                          animate={{ width: "auto", opacity: 1 }}
-                          exit={{ width: 0, opacity: 0 }}
-                      >
-                          <button
-                              onClick={(e) => { e.stopPropagation(); setActiveCard(null); }}
-                              className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
-                          >
-                              <X size={20} />
-                          </button>
-                      </motion.div>
-                  </AnimatePresence>
-              ) : (
-                  <>
-                      <AnimatePresence>
-                        {isSearchOpen && (
-                          <motion.div
-                            initial={{ width: 0, opacity: 0 }}
-                            animate={{ width: 180, opacity: 1 }}
-                            exit={{ width: 0, opacity: 0 }}
-                            transition={{ duration: 0.3, ease: 'easeInOut' }}
-                            className="overflow-hidden"
-                          >
-                            <input
-                              type="text"
-                              placeholder="Search by name..."
-                              value={searchQuery}
-                              onChange={(e) => setSearchQuery(e.target.value)}
-                              className={`h-full w-full bg-transparent px-2 text-sm outline-none ${isDarkMode ? 'text-white placeholder:text-white/40' : 'text-black placeholder:text-black/40'}`}
-                            />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                      <button 
-                        onClick={() => {
-                          setIsSearchOpen(!isSearchOpen);
-                          if (isSearchOpen) setSearchQuery('');
-                        }}
-                        className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
-                      >
-                        {isSearchOpen ? <X size={20}/> : <Search size={20}/>}
-                      </button>
-                  </>
-              )}
-            </div>
-            
-            <AnimatePresence>
-              {!activeCard && isSearchOpen && searchResults.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className={`w-64 max-h-80 overflow-y-auto p-2 rounded-2xl shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/70 border-white/10' : 'bg-[#F5F5DC]/70 border-black/5'}`}
+      {!selectedCompanion && (
+        <AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-end gap-2"
+            >
+              <div className={`flex items-center p-1.5 rounded-full transition-all duration-300 shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/50 border-white/10' : 'bg-[#F5F5DC]/50 border-black/5'}`}>
+                <button 
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-yellow-400 hover:bg-white/10' : 'text-slate-700 hover:bg-black/5'}`}
                 >
-                  <ul>
-                    {searchResults.map(companion => (
-                      <li key={companion.id}>
-                        <button
-                          onClick={() => handleSearchResultClick(companion)}
-                          className={`w-full text-left p-2 rounded-lg text-sm flex items-center gap-3 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/10'}`}
+                  {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+                </button>
+                
+                {activeCard ? (
+                    <AnimatePresence>
+                        <motion.div
+                            initial={{ width: 0, opacity: 0 }}
+                            animate={{ width: "auto", opacity: 1 }}
+                            exit={{ width: 0, opacity: 0 }}
                         >
-                          <companion.icon className={`w-4 h-4 shrink-0 ${companion.color}`} />
-                          <span className="flex-1 truncate">{companion.title}</span>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); setActiveCard(null); }}
+                                className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
+                            >
+                                <X size={20} />
+                            </button>
+                        </motion.div>
+                    </AnimatePresence>
+                ) : (
+                    <>
+                        <AnimatePresence>
+                          {isSearchOpen && (
+                            <motion.div
+                              initial={{ width: 0, opacity: 0 }}
+                              animate={{ width: 180, opacity: 1 }}
+                              exit={{ width: 0, opacity: 0 }}
+                              transition={{ duration: 0.3, ease: 'easeInOut' }}
+                              className="overflow-hidden"
+                            >
+                              <input
+                                type="text"
+                                placeholder="Search by name..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className={`h-full w-full bg-transparent px-2 text-sm outline-none ${isDarkMode ? 'text-white placeholder:text-white/40' : 'text-black placeholder:text-black/40'}`}
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                        <button 
+                          onClick={() => {
+                            setIsSearchOpen(!isSearchOpen);
+                            if (isSearchOpen) setSearchQuery('');
+                          }}
+                          className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
+                        >
+                          {isSearchOpen ? <X size={20}/> : <Search size={20}/>}
                         </button>
-                      </li>
-                    ))}
-                  </ul>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                    </>
+                )}
+              </div>
+              
+              <AnimatePresence>
+                {!activeCard && isSearchOpen && searchResults.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className={`w-64 max-h-80 overflow-y-auto p-2 rounded-2xl shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/70 border-white/10' : 'bg-[#F5F5DC]/70 border-black/5'}`}
+                  >
+                    <ul>
+                      {searchResults.map(companion => (
+                        <li key={companion.id}>
+                          <button
+                            onClick={() => handleSearchResultClick(companion)}
+                            className={`w-full text-left p-2 rounded-lg text-sm flex items-center gap-3 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/10'}`}
+                          >
+                            <companion.icon className={`w-4 h-4 shrink-0 ${companion.color}`} />
+                            <span className="flex-1 truncate">{companion.title}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+        </AnimatePresence>
+      )}
 
       <TransitionCurtain 
         mode={transitionMode} 
@@ -791,13 +777,8 @@ export default function Page() {
         isMobile={isMobile}
         onCovered={() => {
           if (transitionMode === 'enter' && window.pendingCompanion) {
-            if (isMobile && transitionTextData === null) {
-              setActiveCard(window.pendingCompanion.name === 'About' ? 'about' : 'showreel');
-              window.pendingCompanion = null;
-            } else {
               setSelectedCompanion(window.pendingCompanion);
               window.pendingCompanion = null;
-            }
           } 
           if (transitionMode === 'exit') {
             setSelectedCompanion(null);
@@ -835,6 +816,8 @@ export default function Page() {
                   if (activeCard !== 'about') {
                     setActiveCard('about');
                     setIsSearchOpen(false);
+                  } else if (isMobile) {
+                    setActiveCard(null);
                   }
                 }}
                 data-is-expanded={activeCard === 'about'}
@@ -846,13 +829,14 @@ export default function Page() {
                     : `md:col-span-1 relative hover:scale-[0.98] justify-between bg-[#7C02A2] text-white`
                   }
                   ${activeCard === 'showreel' ? 'opacity-0 pointer-events-none' : 'opacity-100'} 
+                  ${isMobile && activeCard === 'about' ? '' : 'order-1 md:order-none'}
                 `}
               >
                 <motion.div layout="position" className="flex justify-between items-start w-full">
                     <span className="text-xs font-bold tracking-widest font-body opacity-60">ABOUT</span>
                 </motion.div>
                 {activeCard === 'about' ? (
-                    <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-full mx-auto w-full pb-32 px-2">
+                    <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-full mx-auto w-full pb-64 px-2">
                         <div className="flex flex-col gap-4 h-full">
                             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2 md:mb-4">The Mission</h2>
                             <div className={`${isDarkMode ? 'bg-white/5' : 'bg-purple-200/50'} rounded-3xl p-4 md:p-6 flex-1 flex flex-col gap-3 shadow-inner`}>
@@ -863,7 +847,7 @@ export default function Page() {
                                         </motion.div>
                                     ))}
                                 </div>
-                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4.5 }} className="mt-auto flex gap-2 p-2 md:p-0">
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4.5 }} className="mt-auto flex gap-2 md:gap-4 p-2 md:p-0">
                                     <input 
                                         type="text"
                                         value={chatInput}
@@ -935,10 +919,44 @@ export default function Page() {
 
               <motion.div
                 layout={!isMobile}
+                className={`
+                  md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer
+                  ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
+                  bg-black border border-neutral-800 order-first md:order-none
+                `}
+                onMouseEnter={() => setIsFirstsCardRevealed(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsFirstsCardRevealed(false);
+                }}
+              >
+                  <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black transition-opacity duration-1000", isFirstsCardRevealed ? 'opacity-100' : 'opacity-100 md:opacity-0')} />
+                  <div className="flex flex-col items-center z-10 relative p-4">
+                      <h1 className={cn(
+                        "font-headline font-medium text-amber-500 md:text-neutral-800 transition-all duration-700 ease-out text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] md:tracking-[0.3em]",
+                        isFirstsCardRevealed ? "md:-translate-y-2 md:text-amber-100 md:blur-0 md:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]" : "blur-0 md:blur-[2px]"
+                      )}>
+                        THE FIRSTS
+                      </h1>
+                      <div className={cn(
+                        "transition-all duration-1000 delay-300 mt-4 border-t border-amber-500/50 pt-3 w-full max-w-sm",
+                        isFirstsCardRevealed ? "opacity-100 translate-y-0 blur-none" : "opacity-100 md:opacity-0 translate-y-0 md:translate-y-2 blur-0 md:blur-sm"
+                      )}>
+                        <p className="text-[10px] md:text-xs text-amber-500/80 font-body tracking-[0.3em] uppercase">
+                          {SUBTITLE}
+                        </p>
+                      </div>
+                  </div>
+              </motion.div>
+
+              <motion.div
+                layout={!isMobile}
                 onClick={() => {
                   if (activeCard !== 'showreel') {
                     setActiveCard('showreel');
                     setIsSearchOpen(false);
+                  } else if (isMobile) {
+                    setActiveCard(null);
                   }
                 }}
                 data-is-expanded={activeCard === 'showreel'}
@@ -952,6 +970,7 @@ export default function Page() {
                     : 'md:col-span-1 relative bg-[#1A3C34] text-white'
                   }
                   ${activeCard === 'about' ? 'opacity-0 pointer-events-none' : 'opacity-100'}
+                  ${isMobile && activeCard === 'about' ? '' : 'order-2 md:order-none'}
                 `}
               >
                 {activeCard === 'showreel' ? (
@@ -1013,37 +1032,7 @@ export default function Page() {
                     </>
                 )}
               </motion.div>
-              <motion.div
-                layout={!isMobile}
-                className={`
-                  md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer
-                  ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
-                  bg-black border border-neutral-800
-                `}
-                onMouseEnter={() => setIsFirstsCardRevealed(true)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsFirstsCardRevealed(false);
-                }}
-              >
-                  <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black transition-opacity duration-1000", isFirstsCardRevealed ? 'opacity-100' : 'opacity-100 md:opacity-0')} />
-                  <div className="flex flex-col items-center z-10 relative p-4">
-                      <h1 className={cn(
-                        "font-headline font-medium text-amber-500 md:text-neutral-800 transition-all duration-700 ease-out text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] md:tracking-[0.3em]",
-                        isFirstsCardRevealed ? "md:-translate-y-2 md:text-amber-100 md:blur-0 md:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]" : "blur-0 md:blur-[2px]"
-                      )}>
-                        THE FIRSTS
-                      </h1>
-                      <div className={cn(
-                        "transition-all duration-1000 delay-300 mt-4 border-t border-amber-500/50 pt-3 w-full max-w-sm",
-                        isFirstsCardRevealed ? "opacity-100 translate-y-0 blur-none" : "opacity-100 md:opacity-0 translate-y-0 md:translate-y-2 blur-0 md:blur-sm"
-                      )}>
-                        <p className="text-[10px] md:text-xs text-amber-500/80 font-body tracking-[0.3em] uppercase">
-                          {SUBTITLE}
-                        </p>
-                      </div>
-                  </div>
-              </motion.div>
+
             </div>
 
             <div className={`relative w-full cursor-grab active:cursor-grabbing transition-opacity duration-500 ${activeCard ? 'opacity-0' : 'opacity-100'}`}>
