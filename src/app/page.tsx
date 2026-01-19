@@ -492,8 +492,8 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
                     zIndex: isActive ? 50 : 10,
                     transform: `translate(${x}px, ${y}px) scale(${scale})`
                   }}>
-                  <div className={`p-3 md:p-4 rounded-full backdrop-blur-lg border shadow-2xl transition-all duration-300 ${isActive ? sidebarItemBgActive : sidebarItemBgInactive}`}>
-                    <data.icon className={`w-5 h-5 md:w-6 md:h-6 ${data.color}`} />
+                  <div className={`p-4 md:p-4 rounded-full backdrop-blur-xl border shadow-2xl transition-all duration-300 ${isActive ? sidebarItemBgActive : sidebarItemBgInactive}`}>
+                    <data.icon className={`w-6 h-6 md:w-6 md:h-6 ${data.color}`} />
                   </div>
                 </div>
               );
@@ -925,10 +925,10 @@ export default function Page() {
                 data-is-expanded={activeCard === 'about'}
                 transition={transitionSettings}
                 className={`
-                  rounded-[32px] p-6 flex flex-col shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
+                  md:col-span-1 rounded-[32px] p-6 flex flex-col shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
                   ${activeCard === 'about' 
                     ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-4 md:p-6 overflow-y-auto cursor-auto ${aboutCardBg}` 
-                    : `md:col-span-1 relative hover:scale-[0.98] justify-between bg-[#7C02A2] text-white`
+                    : `relative hover:scale-[0.98] justify-between bg-[#7C02A2] text-white`
                   }
                   ${activeCard === 'showreel' ? 'opacity-0 pointer-events-none' : 'opacity-100'} 
                 `}
@@ -1026,10 +1026,7 @@ export default function Page() {
                   bg-black border border-neutral-800
                 `}
                 onMouseEnter={() => setIsFirstsCardRevealed(true)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsFirstsCardRevealed(false);
-                }}
+                onMouseLeave={() => setIsFirstsCardRevealed(false)}
               >
                   <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black transition-opacity duration-1000", isFirstsCardRevealed ? 'opacity-100' : 'opacity-100 md:opacity-0')} />
                   <div className="flex flex-col items-center z-10 relative p-4">
@@ -1065,10 +1062,10 @@ export default function Page() {
                 initial="initial"
                 whileHover="hover"
                 className={`
-                  rounded-[32px] p-6 flex flex-col justify-between shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
+                  md:col-span-1 rounded-[32px] p-6 flex flex-col justify-between shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
                   ${activeCard === 'showreel' 
-                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-0 overflow-y-auto cursor-auto ${identityCardBg}` 
-                    : 'md:col-span-1 relative bg-[#1A3C34] text-white'
+                    ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 overflow-y-auto cursor-auto ${identityCardBg}` 
+                    : 'relative bg-[#1A3C34] text-white'
                   }
                   ${activeCard === 'about' ? 'opacity-0 pointer-events-none' : 'opacity-100'}
                 `}
@@ -1183,4 +1180,5 @@ export default function Page() {
     </div>
   );
 };
+
 
