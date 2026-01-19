@@ -958,7 +958,10 @@ export default function Page() {
                     <span className="text-xs font-bold tracking-widest font-body opacity-60">ABOUT</span>
                 </motion.div>
                 {activeCard === 'about' ? (
-                    <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-full mx-auto w-full pb-64 px-2">
+                    <div 
+                        className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-full mx-auto w-full pb-64 px-2"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <div className="flex flex-col gap-4 h-full">
                             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2 md:mb-4">The Mission</h2>
                             <div className={`${isDarkMode ? 'bg-white/5' : 'bg-purple-200/50'} rounded-3xl p-4 md:p-6 flex-1 flex flex-col gap-3 shadow-inner`}>
@@ -1041,8 +1044,9 @@ export default function Page() {
 
               <motion.div
                 layout={!isMobile}
-                onClick={() => setIsFirstsCardRevealed(false)}
-                onMouseEnter={() => setIsFirstsCardRevealed(true)}
+                onClick={() => isMobile && setIsFirstsCardRevealed(!isFirstsCardRevealed)}
+                onHoverStart={() => !isMobile && setIsFirstsCardRevealed(true)}
+                onHoverEnd={() => !isMobile && setIsFirstsCardRevealed(false)}
                 className={`
                   md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer order-1 md:order-none
                   ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
@@ -1093,7 +1097,7 @@ export default function Page() {
               >
                 {activeCard === 'showreel' ? (
                     <div 
-                        className={`flex flex-col items-center justify-start max-w-full mx-auto w-full pt-10 md:pt-12 px-4 md:px-8`}
+                        className={`flex flex-col items-center justify-start max-w-full mx-auto w-full pt-10 md:pt-12 px-4 md:px-8 pb-32`}
                         onClick={(e) => e.stopPropagation()} 
                     >
                         <motion.h2 
@@ -1129,7 +1133,7 @@ export default function Page() {
                             </motion.div>
                             ))}
                         </div>
-                        <div className="w-full h-24 shrink-0"></div>
+                        <div className="w-full h-24 shrink-0" />
                     </div>
                 ) : (
                     <>
