@@ -359,6 +359,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
 
   const handlers = {
     wheel: (e: React.WheelEvent) => {
+      e.stopPropagation();
       refs.current.velocity = 0;
       setState(p => ({ ...p, rotation: p.rotation - e.deltaY * 0.15 }));
     },
@@ -399,8 +400,8 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
 
       {!state.showModal && (
         <div 
-            className={`absolute top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-end gap-2`}
             onPointerDown={(e) => e.stopPropagation()}
+            className={`absolute top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-end gap-2`}
         >
             <div className={`flex items-center p-1.5 rounded-full transition-all duration-300 shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/50 border-white/10' : 'bg-[#F5F5DC]/50 border-black/5'}`}>
             <button 
@@ -468,7 +469,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
 
 
       <div className={`absolute inset-y-0 right-0 w-2/3 pointer-events-none`}>
-          <div className={`absolute inset-0 rounded-full blur-[300px] transition-colors duration-700 transform scale-y-[2.5] scale-x-150 translate-x-1/3 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.35 : 0.2 }} />
+          <div className={`absolute inset-0 rounded-full blur-[250px] transition-colors duration-700 transform scale-y-[2.0] scale-x-150 translate-x-1/4 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
       </div>
 
 
@@ -485,9 +486,9 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
               
               let x, y, scale;
               if (layout.mode === 'mobile') {
-                  x = 10; // Add padding from left edge
-                  y = angle * 5.5; 
-                  scale = isActive ? 1.3 : 0.9;
+                  x = 0;
+                  y = angle * 4.5; 
+                  scale = isActive ? 1.2 : 0.8;
               } else {
                   x = layout.centerX + layout.radius * Math.cos(rad);
                   y = layout.radius * Math.sin(rad);
@@ -503,8 +504,8 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
                     zIndex: isActive ? 50 : 10,
                     transform: `translate(${x}px, ${y}px) scale(${scale})`
                   }}>
-                  <div className={`p-4 md:p-5 rounded-full backdrop-blur-xl border shadow-2xl transition-all duration-300 ${isActive ? sidebarItemBgActive : sidebarItemBgInactive}`}>
-                    <data.icon className={`w-6 h-6 md:w-7 md:h-7 ${data.color}`} />
+                  <div className={`p-4 md:p-3 rounded-full backdrop-blur-xl border shadow-2xl transition-all duration-300 ${isActive ? sidebarItemBgActive : sidebarItemBgInactive}`}>
+                    <data.icon className={`w-6 h-6 md:w-5 md:h-5 ${data.color}`} />
                   </div>
                 </div>
               );
@@ -517,7 +518,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
         </div>
       )}
 
-      <div className={`flex-1 flex flex-col justify-center items-end pl-28 md:pl-32 lg:pl-60 pr-4 md:pr-12 lg:pr-24 z-10 pointer-events-none h-full relative ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+      <div className={`flex-1 flex flex-col justify-center items-end pl-24 md:pl-32 lg:pl-60 pr-4 md:pr-12 lg:pr-24 z-10 pointer-events-none h-full relative ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
         <div key={active.id} className="max-w-2xl pointer-events-auto text-right w-full">
             <h3 className={`text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase mb-4 ${isDarkMode ? 'text-white/30' : 'text-black/50'}`}>{categoryInfo.name}</h3>
 
@@ -577,6 +578,7 @@ const TransitionCurtain = ({ mode, color, onCovered, onComplete, textData, isMob
   useEffect(() => {
     if (mode) {
       if (isMobile && textData == null) {
+        // Skip transition for About/Identity on mobile
         onCovered();
         onComplete();
         return;
@@ -708,7 +710,7 @@ export default function Page() {
     if(isCategory) {
       setTransitionTextData(item);
     } else {
-      setTransitionTextData(null);
+      setTransitionTextData(null); // For about/identity cards
     }
     setTransitionMode('enter');
   };
@@ -759,6 +761,7 @@ export default function Page() {
   const getSubDataForCategory = (category: any) => {
     if (!category) return [];
     const startIndex = category.dataStartIndex;
+    // Find the end index. It's either the start of the next category or the end of the data array.
     const nextCategory = CATEGORIES.find(c => c.dataStartIndex > startIndex);
     const endIndex = nextCategory ? nextCategory.dataStartIndex : ALL_COMPANIONS_DATA.length;
     
@@ -1039,6 +1042,7 @@ export default function Page() {
 
               <motion.div
                 layout={!isMobile}
+                onClick={() => setIsFirstsCardRevealed(false)}
                 className={`
                   md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer
                   ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
@@ -1046,7 +1050,6 @@ export default function Page() {
                 `}
                 onMouseEnter={() => setIsFirstsCardRevealed(true)}
                 onMouseLeave={() => setIsFirstsCardRevealed(false)}
-                onClick={() => setIsFirstsCardRevealed(false)}
               >
                   <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black transition-opacity duration-1000", isFirstsCardRevealed ? 'opacity-100' : 'opacity-100 md:opacity-0')} />
                   <div className="flex flex-col items-center z-10 relative p-4">
@@ -1092,7 +1095,7 @@ export default function Page() {
               >
                 {activeCard === 'showreel' ? (
                     <div 
-                        className={`flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-10 md:pt-12 px-4 md:px-8 pb-32`}
+                        className={`flex flex-col items-center justify-start max-w-full mx-auto w-full pt-10 md:pt-12 px-4 md:px-8`}
                         onClick={(e) => e.stopPropagation()} 
                     >
                         <motion.h2 
@@ -1128,6 +1131,7 @@ export default function Page() {
                             </motion.div>
                             ))}
                         </div>
+                        <div className="w-full h-20 shrink-0"></div>
                     </div>
                 ) : (
                     <>
