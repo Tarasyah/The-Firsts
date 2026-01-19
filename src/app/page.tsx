@@ -160,12 +160,12 @@ const DEFINITIONS = [
 ];
 
 const CHAT_MESSAGES = [
-  { id: 1, text: "Assalamu Alaikum! 👋", sender: 'bot', delay: 0.2 },
+  { id: 1, text: "Assalamu'alaikum Warahmatullahi Wabarakatuh! 👋", sender: 'bot', delay: 0.2 },
   { id: 2, text: "Welcome to The Firsts Project.", sender: 'bot', delay: 0.8 },
-  { id: 3, text: "We combine modern design with authentic Islamic history.", sender: 'bot', delay: 1.6 },
-  { id: 4, text: "Our goal is to revive the stories of the Sahaba.", sender: 'bot', delay: 2.4 },
-  { id: 5, text: "Using technology to make history accessible.", sender: 'bot', delay: 3.2 },
-  { id: 6, text: "Open for collaboration opportunities! 👇", sender: 'bot', delay: 4.0 }, 
+  { id: 3, text: "We combine modern design with authentic Islamic history.", sender: 'bot', delay: 1.2 },
+  { id: 4, text: "Our goal is to revive the stories of the Sahaba.", sender: 'bot', delay: 2.0 },
+  { id: 5, text: "Using technology to make history accessible.", sender: 'bot', delay: 2.5 },
+  { id: 6, text: "Open for collaboration opportunities! 👇", sender: 'bot', delay: 3.0 }, 
 ];
 
 /* -------------------------------------------------------------------------- */
