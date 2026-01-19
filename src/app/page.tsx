@@ -307,7 +307,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
 
   const DATA = items;
 
-  const sidebarItemBgActive = isDarkMode ? 'bg-white/20 border-white/30' : 'bg-black/10 border-black/10';
+  const sidebarItemBgActive = isDarkMode ? 'bg-white/20 border-white/30 backdrop-blur-lg' : 'bg-black/10 border-black/10 backdrop-blur-lg';
   const sidebarItemBgInactive = isDarkMode ? 'bg-slate-900/60 backdrop-blur-lg' : 'bg-[#F5F5DC]/60 backdrop-blur-lg shadow-lg';
   const backBtnClass = isDarkMode ? 'bg-white/10 hover:bg-white/20 text-white border-white/5' : 'bg-black/5 hover:bg-black/10 text-black border-black/5';
   const readBtnClass = isDarkMode ? 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/30 text-white' : 'border-black/10 bg-black/5 hover:bg-black/10 hover:border-black/30 text-black';
@@ -400,9 +400,8 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
 
       {!state.showModal && (
         <div 
-            onPointerDown={(e) => e.stopPropagation()}
-            className={`absolute top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-end gap-2`}
-        >
+          onPointerDown={(e) => e.stopPropagation()}
+          className={`absolute top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-end gap-2`}>
             <div className={`flex items-center p-1.5 rounded-full transition-all duration-300 shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/50 border-white/10' : 'bg-[#F5F5DC]/50 border-black/5'}`}>
             <button 
                 onClick={() => setIsDarkMode(!isDarkMode)}
@@ -504,8 +503,8 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
                     zIndex: isActive ? 50 : 10,
                     transform: `translate(${x}px, ${y}px) scale(${scale})`
                   }}>
-                  <div className={`p-4 md:p-3 rounded-full backdrop-blur-xl border shadow-2xl transition-all duration-300 ${isActive ? sidebarItemBgActive : sidebarItemBgInactive}`}>
-                    <data.icon className={`w-6 h-6 md:w-5 md:h-5 ${data.color}`} />
+                  <div className={`p-3 md:p-3 rounded-full backdrop-blur-xl border shadow-2xl transition-all duration-300 ${isActive ? sidebarItemBgActive : sidebarItemBgInactive}`}>
+                    <data.icon className={`w-5 h-5 md:w-5 md:h-5 ${data.color}`} />
                   </div>
                 </div>
               );
@@ -933,7 +932,7 @@ export default function Page() {
             transition={{ duration: 0.5 }}
             className="flex-1 flex flex-col"
           >
-            <div className="max-w-[98%] w-full mb-8 px-2 md:px-4 grid grid-cols-1 md:grid-cols-4 gap-4 h-auto md:h-56 relative z-10">
+            <div className="max-w-[98%] w-full mb-8 px-2 md:px-4 flex flex-col md:grid md:grid-cols-4 gap-4 h-auto md:h-56 relative z-10">
               <motion.div
                 layout={!isMobile}
                 onClick={() => {
@@ -947,7 +946,7 @@ export default function Page() {
                 data-is-expanded={activeCard === 'about'}
                 transition={transitionSettings}
                 className={`
-                  md:col-span-1 rounded-[32px] p-6 flex flex-col shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
+                  md:col-span-1 rounded-[32px] p-6 flex flex-col shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500 order-2 md:order-none
                   ${activeCard === 'about' 
                     ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-4 md:p-6 overflow-y-auto cursor-auto ${aboutCardBg}` 
                     : `relative hover:scale-[0.98] justify-between bg-[#7C02A2] text-white`
@@ -1043,13 +1042,12 @@ export default function Page() {
               <motion.div
                 layout={!isMobile}
                 onClick={() => setIsFirstsCardRevealed(false)}
+                onMouseEnter={() => setIsFirstsCardRevealed(true)}
                 className={`
-                  md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer
+                  md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer order-1 md:order-none
                   ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
                   bg-black border border-neutral-800
                 `}
-                onMouseEnter={() => setIsFirstsCardRevealed(true)}
-                onMouseLeave={() => setIsFirstsCardRevealed(false)}
               >
                   <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black transition-opacity duration-1000", isFirstsCardRevealed ? 'opacity-100' : 'opacity-100 md:opacity-0')} />
                   <div className="flex flex-col items-center z-10 relative p-4">
@@ -1085,7 +1083,7 @@ export default function Page() {
                 initial="initial"
                 whileHover="hover"
                 className={`
-                  md:col-span-1 rounded-[32px] p-6 flex flex-col justify-between shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500
+                  md:col-span-1 rounded-[32px] p-6 flex flex-col justify-between shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500 order-3 md:order-none
                   ${activeCard === 'showreel' 
                     ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 overflow-y-auto cursor-auto ${identityCardBg}` 
                     : 'relative bg-[#1A3C34] text-white'
@@ -1131,7 +1129,7 @@ export default function Page() {
                             </motion.div>
                             ))}
                         </div>
-                        <div className="w-full h-20 shrink-0"></div>
+                        <div className="w-full h-24 shrink-0"></div>
                     </div>
                 ) : (
                     <>
