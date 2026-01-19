@@ -5,3 +5,9 @@ Welcome to "The Firsts," a dynamic and visually rich web application designed to
 Built with a modern tech stack including Next.js, React, Tailwind CSS, and Framer Motion, the application offers a seamless and engaging user experience. Key features include a fluid, animated carousel for browsing categories, a detailed "wheel" view for exploring individual companions, and a responsive design that adapts beautifully to desktop, tablet, and mobile devices. The app also includes a theme toggle for light and dark modes, along with robust search functionality to easily find specific figures across all categories.
 
 All historical content is sourced from the renowned "The Firsts" series by Dr. Omar Suleiman of the Yaqeen Institute for Islamic Research, ensuring authenticity and depth. The project's ultimate goal is to make this profound history accessible and inspiring for a new generation. This is an open-source initiative, and feedback or collaboration inquiries are welcome through the contact channels provided within the application.
+
+A special acknowledgment to Furkan Özden and Milan Ricoul for their incredible work on CodePen. Portions of the logic and design in this project were inspired by and adapted from their original source code :
+
+Copyright (c) 2026 by Furkan Özden (https://codepen.io/furkanozden/pen/AeBdvx)
+
+Copyright (c) 2026 by Milan Ricoul (https://codepen.io/mitori/pen/zLKZVZ)
