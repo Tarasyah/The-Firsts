@@ -1,5 +1,7 @@
-# Firebase Studio
+# The Firsts: An Interactive Exploration of Islamic History
 
-This is a NextJS starter in Firebase Studio.
+Welcome to "The Firsts," a dynamic and visually rich web application designed to bring the stories of the Prophet Muhammad's ﷺ companions (the Sahaba) to life. This project categorizes these trailblazing figures into distinct groups—such as The Forerunners, The Trendsetters, and The Strangers—to highlight their unique virtues and historical significance. Through an immersive and modern interface, users can explore the lives, lessons, and legacies of the men and women who shaped the foundations of Islamic history.
 
-To get started, take a look at src/app/page.tsx.
+Built with a modern tech stack including Next.js, React, Tailwind CSS, and Framer Motion, the application offers a seamless and engaging user experience. Key features include a fluid, animated carousel for browsing categories, a detailed "wheel" view for exploring individual companions, and a responsive design that adapts beautifully to desktop, tablet, and mobile devices. The app also includes a theme toggle for light and dark modes, along with robust search functionality to easily find specific figures across all categories.
+
+All historical content is sourced from the renowned "The Firsts" series by Dr. Omar Suleiman of the Yaqeen Institute for Islamic Research, ensuring authenticity and depth. The project's ultimate goal is to make this profound history accessible and inspiring for a new generation. This is an open-source initiative, and feedback or collaboration inquiries are welcome through the contact channels provided within the application.
