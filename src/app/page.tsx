@@ -1045,9 +1045,14 @@ export default function Page() {
 
               <motion.div
                 layout={!isMobile}
+                onClick={() => {
+                  if (isMobile) {
+                    setIsFirstsCardRevealed(v => !v);
+                  } else {
+                    setIsFirstsCardRevealed(false);
+                  }
+                }}
                 onMouseEnter={!isMobile ? () => setIsFirstsCardRevealed(true) : undefined}
-                onMouseLeave={!isMobile ? () => setIsFirstsCardRevealed(false) : undefined}
-                onClick={() => isMobile && setIsFirstsCardRevealed(v => !v)}
                 className={`
                   md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer order-1 md:order-none
                   ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
