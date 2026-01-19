@@ -241,12 +241,10 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
-
-  // FIX 1: Auto-Focus Ref for Biography Page
   const searchInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (isSearchOpen && searchInputRef.current) {
-        // Small timeout to ensure animation has started/rendered
         setTimeout(() => {
             searchInputRef.current?.focus();
         }, 100);
@@ -310,7 +308,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
   const DATA = items;
 
   const sidebarItemBgActive = isDarkMode ? 'bg-white/20 border-white/30' : 'bg-black/10 border-black/10';
-  const sidebarItemBgInactive = isDarkMode ? 'bg-slate-900/60 backdrop-blur-md' : 'bg-[#F5F5DC]/60 backdrop-blur-md shadow-lg';
+  const sidebarItemBgInactive = isDarkMode ? 'bg-slate-900/60 backdrop-blur-lg' : 'bg-[#F5F5DC]/60 backdrop-blur-lg shadow-lg';
   const backBtnClass = isDarkMode ? 'bg-white/10 hover:bg-white/20 text-white border-white/5' : 'bg-black/5 hover:bg-black/10 text-black border-black/5';
   const readBtnClass = isDarkMode ? 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/30 text-white' : 'border-black/10 bg-black/5 hover:bg-black/10 hover:border-black/30 text-black';
   const subTextClass = isDarkMode ? 'text-slate-300' : 'text-slate-800'; 
@@ -400,7 +398,10 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
       </button>
 
       {!state.showModal && (
-        <div className={`absolute top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-end gap-2`}>
+        <div 
+            className={`absolute top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-end gap-2`}
+            onPointerDown={(e) => e.stopPropagation()}
+        >
             <div className={`flex items-center p-1.5 rounded-full transition-all duration-300 shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/50 border-white/10' : 'bg-[#F5F5DC]/50 border-black/5'}`}>
             <button 
                 onClick={() => setIsDarkMode(!isDarkMode)}
@@ -467,7 +468,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
 
 
       <div className={`absolute inset-y-0 right-0 w-2/3 pointer-events-none`}>
-          <div className={`absolute inset-0 rounded-full blur-[250px] transition-colors duration-700 transform scale-y-[2.0] scale-x-150 translate-x-1/4 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
+          <div className={`absolute inset-0 rounded-full blur-[300px] transition-colors duration-700 transform scale-y-[2.5] scale-x-150 translate-x-1/3 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.35 : 0.2 }} />
       </div>
 
 
@@ -484,9 +485,9 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
               
               let x, y, scale;
               if (layout.mode === 'mobile') {
-                  x = 0;
-                  y = angle * 4.5; 
-                  scale = isActive ? 1.2 : 0.8;
+                  x = 10; // Add padding from left edge
+                  y = angle * 5.5; 
+                  scale = isActive ? 1.3 : 0.9;
               } else {
                   x = layout.centerX + layout.radius * Math.cos(rad);
                   y = layout.radius * Math.sin(rad);
@@ -502,8 +503,8 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
                     zIndex: isActive ? 50 : 10,
                     transform: `translate(${x}px, ${y}px) scale(${scale})`
                   }}>
-                  <div className={`p-4 md:p-4 rounded-full backdrop-blur-xl border shadow-2xl transition-all duration-300 ${isActive ? sidebarItemBgActive : sidebarItemBgInactive}`}>
-                    <data.icon className={`w-6 h-6 md:w-6 md:h-6 ${data.color}`} />
+                  <div className={`p-4 md:p-5 rounded-full backdrop-blur-xl border shadow-2xl transition-all duration-300 ${isActive ? sidebarItemBgActive : sidebarItemBgInactive}`}>
+                    <data.icon className={`w-6 h-6 md:w-7 md:h-7 ${data.color}`} />
                   </div>
                 </div>
               );
@@ -516,7 +517,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
         </div>
       )}
 
-      <div className={`flex-1 flex flex-col justify-center items-end pl-24 md:pl-32 lg:pl-60 pr-4 md:pr-12 lg:pr-24 z-10 pointer-events-none h-full relative ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+      <div className={`flex-1 flex flex-col justify-center items-end pl-28 md:pl-32 lg:pl-60 pr-4 md:pr-12 lg:pr-24 z-10 pointer-events-none h-full relative ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
         <div key={active.id} className="max-w-2xl pointer-events-auto text-right w-full">
             <h3 className={`text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase mb-4 ${isDarkMode ? 'text-white/30' : 'text-black/50'}`}>{categoryInfo.name}</h3>
 
@@ -576,7 +577,6 @@ const TransitionCurtain = ({ mode, color, onCovered, onComplete, textData, isMob
   useEffect(() => {
     if (mode) {
       if (isMobile && textData == null) {
-        // Skip transition for About/Identity on mobile
         onCovered();
         onComplete();
         return;
@@ -650,12 +650,10 @@ export default function Page() {
   const [isFirstsCardRevealed, setIsFirstsCardRevealed] = useState(false);
   const [isBiographyModalOpen, setIsBiographyModalOpen] = useState(false);
   const isMobile = useIsMobile();
-
-  // FIX 1: Auto-Focus Ref for Main Page
   const mainSearchInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (isSearchOpen && mainSearchInputRef.current) {
-        // Small timeout for animation
         setTimeout(() => {
             mainSearchInputRef.current?.focus();
         }, 100);
@@ -710,7 +708,7 @@ export default function Page() {
     if(isCategory) {
       setTransitionTextData(item);
     } else {
-      setTransitionTextData(null); // For about/identity cards
+      setTransitionTextData(null);
     }
     setTransitionMode('enter');
   };
@@ -761,7 +759,6 @@ export default function Page() {
   const getSubDataForCategory = (category: any) => {
     if (!category) return [];
     const startIndex = category.dataStartIndex;
-    // Find the end index. It's either the start of the next category or the end of the data array.
     const nextCategory = CATEGORIES.find(c => c.dataStartIndex > startIndex);
     const endIndex = nextCategory ? nextCategory.dataStartIndex : ALL_COMPANIONS_DATA.length;
     
@@ -1049,6 +1046,7 @@ export default function Page() {
                 `}
                 onMouseEnter={() => setIsFirstsCardRevealed(true)}
                 onMouseLeave={() => setIsFirstsCardRevealed(false)}
+                onClick={() => setIsFirstsCardRevealed(false)}
               >
                   <div className={cn("absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-900/20 via-black to-black transition-opacity duration-1000", isFirstsCardRevealed ? 'opacity-100' : 'opacity-100 md:opacity-0')} />
                   <div className="flex flex-col items-center z-10 relative p-4">
@@ -1094,7 +1092,7 @@ export default function Page() {
               >
                 {activeCard === 'showreel' ? (
                     <div 
-                        className={`flex flex-col items-center justify-start max-w-full mx-auto w-full pt-10 md:pt-12 px-4 md:px-8`}
+                        className={`flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-10 md:pt-12 px-4 md:px-8 pb-32`}
                         onClick={(e) => e.stopPropagation()} 
                     >
                         <motion.h2 
@@ -1130,8 +1128,6 @@ export default function Page() {
                             </motion.div>
                             ))}
                         </div>
-                        {/* FIX 2: Added Spacer for bottom padding to prevent content touching screen */}
-                        <div className="w-full h-40 shrink-0"></div>
                     </div>
                 ) : (
                     <>
