@@ -233,12 +233,16 @@ const GlobalStyles = () => (
 /* -------------------------------------------------------------------------- */
 /* SUB-COMPONENT: CIRCULAR WHEEL (Immersive Detail View)                      */
 /* -------------------------------------------------------------------------- */
-const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompanionId }: { items: any[], categoryInfo: any, onClose: () => void, isDarkMode: boolean, initialCompanionId: number | null }) => {
+const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompanionId, onModalToggle }: { items: any[], categoryInfo: any, onClose: () => void, isDarkMode: boolean, initialCompanionId: number | null, onModalToggle: (isOpen: boolean) => void }) => {
   const CONFIG = { friction: 0.92, degPerItem: 36, visibleRange: 5 }; 
   
   const [state, setState] = useState({ rotation: 0, showModal: false, isDragging: false });
   const refs = useRef({ velocity: 0, lastY: 0, animId: null as number | null });
   const [layout, setLayout] = useState({ mode: 'desktop', radius: 120, centerX: 0 });
+
+  useEffect(() => {
+    onModalToggle(state.showModal);
+  }, [state.showModal, onModalToggle]);
 
   useEffect(() => {
     const updateLayout = () => {
@@ -320,26 +324,23 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
 
   const handlers = {
     wheel: (e: React.WheelEvent) => {
-      if (layout.mode === 'mobile') return;
       refs.current.velocity = 0;
       setState(p => ({ ...p, rotation: p.rotation - e.deltaY * 0.15 }));
     },
     down: (e: React.PointerEvent) => {
-      if (layout.mode === 'mobile') return;
       (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
       refs.current.velocity = 0;
       refs.current.lastY = e.clientY;
       setState(p => ({ ...p, isDragging: true }));
     },
     move: (e: React.PointerEvent) => {
-      if (!state.isDragging || layout.mode === 'mobile') return;
+      if (!state.isDragging) return;
       const delta = e.clientY - refs.current.lastY;
       setState(p => ({ ...p, rotation: p.rotation + delta * 0.5 }));
       refs.current.velocity = delta * 0.5;
       refs.current.lastY = e.clientY;
     },
     up: (e: React.PointerEvent) => {
-      if (layout.mode === 'mobile') return;
       setState(p => ({ ...p, isDragging: false }));
       (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
     }
@@ -366,7 +367,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
       </div>
 
 
-      {layout.mode !== 'mobile' && !state.showModal && (
+      {!state.showModal && (
         <div className={cn("absolute left-0 top-0 h-full w-20 md:w-24 lg:w-40 z-30 pointer-events-none", state.showModal && "hidden")}>
           <div className="absolute top-1/2 w-full h-0">
             {visibleItems.map(({ id, data, angle }) => {
@@ -380,7 +381,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
               let x, y, scale;
               if (layout.mode === 'mobile') {
                   x = 0;
-                  y = angle * 3.0;
+                  y = angle * 4.0;
                   scale = isActive ? 1.2 : 0.8;
               } else {
                   x = layout.centerX + layout.radius * Math.cos(rad);
@@ -411,7 +412,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
         </div>
       )}
 
-      <div className={`flex-1 flex flex-col justify-center items-end pl-4 md:pl-32 lg:pl-60 pr-4 md:pr-12 lg:pr-24 z-10 pointer-events-none h-full relative ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+      <div className={`flex-1 flex flex-col justify-center items-end pl-20 md:pl-32 lg:pl-60 pr-4 md:pr-12 lg:pr-24 z-10 pointer-events-none h-full relative ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
         <div key={active.id} className="max-w-2xl pointer-events-auto text-right w-full">
             <h3 className={`text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase mb-4 ${isDarkMode ? 'text-white/30' : 'text-black/50'}`}>{categoryInfo.name}</h3>
 
@@ -543,6 +544,7 @@ export default function Page() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [initialCompanionId, setInitialCompanionId] = useState<number | null>(null);
   const [isFirstsCardRevealed, setIsFirstsCardRevealed] = useState(false);
+  const [isBiographyModalOpen, setIsBiographyModalOpen] = useState(false);
   const isMobile = useIsMobile();
 
   const duplicatedItems = [...CATEGORIES, ...CATEGORIES, ...CATEGORIES];
@@ -626,7 +628,9 @@ export default function Page() {
 
   const handleCloseDetail = () => {
     if (transitionMode) return;
-    setTransitionColor(selectedCompanion?.color || '#000');
+    if (selectedCompanion) {
+      setTransitionColor(selectedCompanion.color);
+    }
     setTransitionMode('exit');
     setInitialCompanionId(null);
   };
@@ -676,8 +680,8 @@ export default function Page() {
       <GlobalStyles />
       <MosaicBackground isDarkMode={isDarkMode} />
 
-      {!selectedCompanion && (
-        <AnimatePresence>
+      <AnimatePresence>
+        {!isBiographyModalOpen && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -711,7 +715,7 @@ export default function Page() {
                 ) : (
                     <>
                         <AnimatePresence>
-                          {isSearchOpen && (
+                          {isSearchOpen && !selectedCompanion && (
                             <motion.div
                               initial={{ width: 0, opacity: 0 }}
                               animate={{ width: 180, opacity: 1 }}
@@ -729,15 +733,17 @@ export default function Page() {
                             </motion.div>
                           )}
                         </AnimatePresence>
-                        <button 
-                          onClick={() => {
-                            setIsSearchOpen(!isSearchOpen);
-                            if (isSearchOpen) setSearchQuery('');
-                          }}
-                          className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
-                        >
-                          {isSearchOpen ? <X size={20}/> : <Search size={20}/>}
-                        </button>
+                        {!selectedCompanion && (
+                            <button 
+                              onClick={() => {
+                                setIsSearchOpen(!isSearchOpen);
+                                if (isSearchOpen) setSearchQuery('');
+                              }}
+                              className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
+                            >
+                              {isSearchOpen ? <X size={20}/> : <Search size={20}/>}
+                            </button>
+                        )}
                     </>
                 )}
               </div>
@@ -767,8 +773,8 @@ export default function Page() {
                 )}
               </AnimatePresence>
             </motion.div>
-        </AnimatePresence>
-      )}
+        )}
+      </AnimatePresence>
 
       <TransitionCurtain 
         mode={transitionMode} 
@@ -797,6 +803,7 @@ export default function Page() {
             onClose={handleCloseDetail}
             isDarkMode={isDarkMode}
             initialCompanionId={initialCompanionId}
+            onModalToggle={setIsBiographyModalOpen}
         />
       )}
 
@@ -829,7 +836,7 @@ export default function Page() {
                     : `md:col-span-1 relative hover:scale-[0.98] justify-between bg-[#7C02A2] text-white`
                   }
                   ${activeCard === 'showreel' ? 'opacity-0 pointer-events-none' : 'opacity-100'} 
-                  ${isMobile && activeCard === 'about' ? '' : 'order-1 md:order-none'}
+                  ${isMobile && activeCard === 'about' ? 'order-2' : 'order-1'}
                 `}
               >
                 <motion.div layout="position" className="flex justify-between items-start w-full">
@@ -922,7 +929,7 @@ export default function Page() {
                 className={`
                   md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer
                   ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
-                  bg-black border border-neutral-800 order-first md:order-none
+                  bg-black border border-neutral-800 order-first
                 `}
                 onMouseEnter={() => setIsFirstsCardRevealed(true)}
                 onClick={(e) => {
@@ -970,7 +977,7 @@ export default function Page() {
                     : 'md:col-span-1 relative bg-[#1A3C34] text-white'
                   }
                   ${activeCard === 'about' ? 'opacity-0 pointer-events-none' : 'opacity-100'}
-                  ${isMobile && activeCard === 'about' ? '' : 'order-2 md:order-none'}
+                  order-3
                 `}
               >
                 {activeCard === 'showreel' ? (
