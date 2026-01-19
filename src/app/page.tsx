@@ -273,7 +273,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
   const DATA = items;
 
   const sidebarItemBgActive = isDarkMode ? 'bg-white/20 border-white/30' : 'bg-black/10 border-black/10';
-  const sidebarItemBgInactive = isDarkMode ? 'bg-slate-900/60' : 'bg-[#F5F5DC]/60 shadow-lg';
+  const sidebarItemBgInactive = isDarkMode ? 'bg-slate-900/60 backdrop-blur-md' : 'bg-[#F5F5DC]/60 backdrop-blur-md shadow-lg';
   const backBtnClass = isDarkMode ? 'bg-white/10 hover:bg-white/20 text-white border-white/5' : 'bg-black/5 hover:bg-black/10 text-black border-black/5';
   const readBtnClass = isDarkMode ? 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/30 text-white' : 'border-black/10 bg-black/5 hover:bg-black/10 hover:border-black/30 text-black';
   const subTextClass = isDarkMode ? 'text-slate-300' : 'text-slate-800'; 
@@ -362,8 +362,22 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
         <span className="font-bold text-xs uppercase tracking-widest hidden md:inline">HOME</span>
       </button>
 
+      {!state.showModal && (
+        <div className={`absolute top-6 right-6 md:top-8 md:right-8 z-[130] flex flex-col items-end gap-2`}>
+            <div className={`flex items-center p-1.5 rounded-full transition-all duration-300 shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/50 border-white/10' : 'bg-[#F5F5DC]/50 border-black/5'}`}>
+            <button 
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-yellow-400 hover:bg-white/10' : 'text-slate-700 hover:bg-black/5'}`}
+            >
+                {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+            </div>
+        </div>
+      )}
+
+
       <div className={`absolute inset-y-0 right-0 w-2/3 pointer-events-none`}>
-          <div className={`absolute inset-0 rounded-full blur-[200px] transition-colors duration-700 transform scale-y-[2.0] scale-x-150 translate-x-1/3 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
+          <div className={`absolute inset-0 rounded-full blur-[250px] transition-colors duration-700 transform scale-y-[2.0] scale-x-150 translate-x-1/4 ${active.bgColor}`} style={{ opacity: isDarkMode ? 0.4 : 0.25 }} />
       </div>
 
 
@@ -381,7 +395,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
               let x, y, scale;
               if (layout.mode === 'mobile') {
                   x = 0;
-                  y = angle * 4.0;
+                  y = angle * 4.5; 
                   scale = isActive ? 1.2 : 0.8;
               } else {
                   x = layout.centerX + layout.radius * Math.cos(rad);
@@ -398,8 +412,8 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
                     zIndex: isActive ? 50 : 10,
                     transform: `translate(${x}px, ${y}px) scale(${scale})`
                   }}>
-                  <div className={`p-2 md:p-3 rounded-full backdrop-blur-md border shadow-2xl transition-all duration-300 ${isActive ? sidebarItemBgActive : sidebarItemBgInactive}`}>
-                    <data.icon className={`w-4 h-4 md:w-5 md:h-5 ${data.color}`} />
+                  <div className={`p-3 md:p-4 rounded-full backdrop-blur-lg border shadow-2xl transition-all duration-300 ${isActive ? sidebarItemBgActive : sidebarItemBgInactive}`}>
+                    <data.icon className={`w-5 h-5 md:w-6 md:h-6 ${data.color}`} />
                   </div>
                 </div>
               );
@@ -412,7 +426,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
         </div>
       )}
 
-      <div className={`flex-1 flex flex-col justify-center items-end pl-20 md:pl-32 lg:pl-60 pr-4 md:pr-12 lg:pr-24 z-10 pointer-events-none h-full relative ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+      <div className={`flex-1 flex flex-col justify-center items-end pl-24 md:pl-32 lg:pl-60 pr-4 md:pr-12 lg:pr-24 z-10 pointer-events-none h-full relative ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
         <div key={active.id} className="max-w-2xl pointer-events-auto text-right w-full">
             <h3 className={`text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase mb-4 ${isDarkMode ? 'text-white/30' : 'text-black/50'}`}>{categoryInfo.name}</h3>
 
@@ -681,7 +695,7 @@ export default function Page() {
       <MosaicBackground isDarkMode={isDarkMode} />
 
       <AnimatePresence>
-        {!isBiographyModalOpen && (
+        {!selectedCompanion && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -836,7 +850,6 @@ export default function Page() {
                     : `md:col-span-1 relative hover:scale-[0.98] justify-between bg-[#7C02A2] text-white`
                   }
                   ${activeCard === 'showreel' ? 'opacity-0 pointer-events-none' : 'opacity-100'} 
-                  ${isMobile && activeCard === 'about' ? 'order-2' : 'order-1'}
                 `}
               >
                 <motion.div layout="position" className="flex justify-between items-start w-full">
@@ -929,7 +942,7 @@ export default function Page() {
                 className={`
                   md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer
                   ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
-                  bg-black border border-neutral-800 order-first
+                  bg-black border border-neutral-800
                 `}
                 onMouseEnter={() => setIsFirstsCardRevealed(true)}
                 onClick={(e) => {
@@ -977,12 +990,11 @@ export default function Page() {
                     : 'md:col-span-1 relative bg-[#1A3C34] text-white'
                   }
                   ${activeCard === 'about' ? 'opacity-0 pointer-events-none' : 'opacity-100'}
-                  order-3
                 `}
               >
                 {activeCard === 'showreel' ? (
                     <div 
-                        className={`flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-24 pb-96 px-4 md:px-8`}
+                        className={`flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-16 pb-80 px-4 md:px-8`}
                         onClick={(e) => e.stopPropagation()} 
                     >
                         <motion.h2 
@@ -1062,7 +1074,14 @@ export default function Page() {
                     whileHover={{ scale: 0.98 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   >
-                    <Image src={item.img} alt={item.name} fill style={{objectFit: 'cover'}} className="transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0 opacity-80" />
+                    <Image 
+                      src={item.img} 
+                      alt={item.name} 
+                      fill 
+                      style={{objectFit: 'cover'}} 
+                      className="transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0 opacity-80" 
+                      priority={index < CATEGORIES.length}
+                    />
                     <div className="absolute inset-0 opacity-60 mix-blend-multiply transition-opacity group-hover:opacity-40" style={{ backgroundColor: item.color }} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80" />
                     <div className="absolute inset-0 p-6 flex flex-col justify-end">
