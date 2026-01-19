@@ -771,7 +771,7 @@ export default function Page() {
 
   const mainTextClass = isDarkMode ? 'text-white' : 'text-black';
   const cardBgClass = isDarkMode ? 'bg-slate-900 border border-white/10' : 'bg-[#F5F5DC]';
-  const aboutCardBg = isDarkMode ? 'bg-[#800000] text-white' : 'bg-rose-100 text-rose-950';
+  const aboutCardBg = isDarkMode ? 'bg-[#583101] text-white' : 'bg-amber-100 text-amber-950';
   const identityCardBg = isDarkMode ? 'bg-emerald-950 text-white' : 'bg-emerald-100 text-emerald-950';
 
   const YaqeenLogo = ({ className }: { className?: string }) => (
@@ -950,7 +950,7 @@ export default function Page() {
                   md:col-span-1 rounded-[32px] p-6 flex flex-col shadow-sm group cursor-pointer overflow-hidden transition-colors duration-500 order-2 md:order-none
                   ${activeCard === 'about' 
                     ? `fixed inset-0 z-50 rounded-none w-full h-full m-0 p-4 md:p-6 overflow-y-auto cursor-auto ${aboutCardBg}` 
-                    : `relative hover:scale-[0.98] justify-between bg-[#800000] text-white`
+                    : `relative hover:scale-[0.98] justify-between bg-[#583101] text-white`
                   }
                   ${activeCard === 'showreel' ? 'opacity-0 pointer-events-none' : 'opacity-100'} 
                 `}
@@ -965,10 +965,10 @@ export default function Page() {
                     >
                         <div className="flex flex-col gap-4 h-full">
                             <h2 className="text-3xl md:text-4xl font-headline font-bold mb-2 md:mb-4">The Mission</h2>
-                            <div className={`${isDarkMode ? 'bg-white/5' : 'bg-rose-200/50'} rounded-3xl p-4 md:p-6 flex-1 flex flex-col gap-3 shadow-inner`}>
+                            <div className={`${isDarkMode ? 'bg-white/5' : 'bg-amber-200/50'} rounded-3xl p-4 md:p-6 flex-1 flex flex-col gap-3 shadow-inner`}>
                                 <div className="flex-1 overflow-y-auto">
                                     {CHAT_MESSAGES.map((msg) => (
-                                        <motion.div key={msg.id} initial={{ opacity: 0, x: -20, scale: 0.9 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ delay: 0.4 + msg.delay, type: 'spring' }} className={`self-start px-5 py-3 mb-3 rounded-2xl rounded-bl-none shadow-sm max-w-[90%] ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-rose-950'}`}>
+                                        <motion.div key={msg.id} initial={{ opacity: 0, x: -20, scale: 0.9 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ delay: 0.4 + msg.delay, type: 'spring' }} className={`self-start px-5 py-3 mb-3 rounded-2xl rounded-bl-none shadow-sm max-w-[90%] ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-amber-950'}`}>
                                             <p className="text-base md:text-lg font-medium">{msg.text}</p>
                                         </motion.div>
                                     ))}
@@ -980,7 +980,7 @@ export default function Page() {
                                         onChange={(e) => setChatInput(e.target.value)}
                                         onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                                         placeholder="Write a message..."
-                                        className={`h-12 flex-1 rounded-full px-4 flex items-center text-sm md:text-base outline-none transition-colors border-2 border-transparent focus:border-[#10B981]/50 ${isDarkMode ? 'bg-white/10 text-white placeholder-white/50' : 'bg-rose-100 text-rose-950 placeholder-rose-950/60'}`}
+                                        className={`h-12 flex-1 rounded-full px-4 flex items-center text-sm md:text-base outline-none transition-colors border-2 border-transparent focus:border-[#10B981]/50 ${isDarkMode ? 'bg-white/10 text-white placeholder-white/50' : 'bg-amber-100 text-amber-950 placeholder-amber-950/60'}`}
                                     />
                                     <button 
                                         onClick={handleSendMessage}
@@ -994,14 +994,14 @@ export default function Page() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 4.8, duration: 0.5 }}
-                                className={`rounded-2xl p-4 border backdrop-blur-sm mt-auto ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black border-white/10' : 'bg-rose-100 border-rose-900/10'}`}
+                                className={`rounded-2xl p-4 border backdrop-blur-sm mt-auto ${isDarkMode ? 'bg-gradient-to-br from-gray-900 to-black border-white/10' : 'bg-amber-100 border-amber-900/10'}`}
                             >
                                 <div className="flex items-center gap-3 mb-3">
-                                    <span className={`text-[10px] font-bold tracking-widest uppercase ${isDarkMode ? 'text-white/40' : 'text-rose-950/40'}`}>Content Source</span>
-                                    <div className={`h-px flex-1 ${isDarkMode ? 'bg-white/10' : 'bg-rose-900/10'}`}></div>
+                                    <span className={`text-[10px] font-bold tracking-widest uppercase ${isDarkMode ? 'text-white/40' : 'text-amber-950/40'}`}>Content Source</span>
+                                    <div className={`h-px flex-1 ${isDarkMode ? 'bg-white/10' : 'bg-amber-900/10'}`}></div>
                                 </div>
-                                <YaqeenLogo className={`h-8 md:h-12 w-auto mb-3 ${isDarkMode ? 'text-white' : 'text-rose-950'}`} />
-                                <p className={`text-xs leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-rose-800'}`}>
+                                <YaqeenLogo className={`h-8 md:h-12 w-auto mb-3 ${isDarkMode ? 'text-white' : 'text-amber-950'}`} />
+                                <p className={`text-xs leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-amber-800'}`}>
                                     All historical content is sourced from the <strong><a href="https://www.youtube.com/playlist?list=PLQ02IYL5pmhHFl7j6wPcFTZmlQvRhsejp" target="_blank" rel="noopener noreferrer" className={`underline ${isDarkMode ? 'hover:text-white/80' : 'hover:text-black'} transition-colors`}>"The Firsts"</a></strong> series by Yaqeen Institute.
                                     <br className="mb-2"/>
                                     <span className="italic block mt-1 opacity-80">
@@ -1046,14 +1046,8 @@ export default function Page() {
               <motion.div
                 layout={!isMobile}
                 onMouseEnter={!isMobile ? () => setIsFirstsCardRevealed(true) : undefined}
-                onMouseLeave={!isMobile ? () => {} : undefined}
-                onClick={() => {
-                  if (isMobile) {
-                      setIsFirstsCardRevealed(v => !v)
-                  } else {
-                      setIsFirstsCardRevealed(false)
-                  }
-                }}
+                onMouseLeave={!isMobile ? () => setIsFirstsCardRevealed(false) : undefined}
+                onClick={() => isMobile && setIsFirstsCardRevealed(v => !v)}
                 className={`
                   md:col-span-2 rounded-[32px] flex flex-col justify-center items-center text-center relative overflow-hidden shadow-sm transition-all duration-500 cursor-pointer order-1 md:order-none
                   ${activeCard ? 'opacity-0 pointer-events-none' : 'opacity-100'}
