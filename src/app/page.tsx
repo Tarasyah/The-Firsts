@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import React, { useRef, useEffect, useState, useMemo } from 'react';
@@ -244,6 +242,17 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
 
+  // FIX 1: Auto-Focus Ref for Biography Page
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (isSearchOpen && searchInputRef.current) {
+        // Small timeout to ensure animation has started/rendered
+        setTimeout(() => {
+            searchInputRef.current?.focus();
+        }, 100);
+    }
+  }, [isSearchOpen]);
+
   useEffect(() => {
     onModalToggle(state.showModal);
   }, [state.showModal, onModalToggle]);
@@ -409,6 +418,7 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMod
                   className="overflow-hidden"
                 >
                   <input
+                    ref={searchInputRef}
                     type="text"
                     placeholder="Search in category..."
                     value={searchQuery}
@@ -641,6 +651,17 @@ export default function Page() {
   const [isBiographyModalOpen, setIsBiographyModalOpen] = useState(false);
   const isMobile = useIsMobile();
 
+  // FIX 1: Auto-Focus Ref for Main Page
+  const mainSearchInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (isSearchOpen && mainSearchInputRef.current) {
+        // Small timeout for animation
+        setTimeout(() => {
+            mainSearchInputRef.current?.focus();
+        }, 100);
+    }
+  }, [isSearchOpen]);
+
   const duplicatedItems = [...CATEGORIES, ...CATEGORIES, ...CATEGORIES];
   const [singleScreenWidth, setSingleScreenWidth] = useState(0);
 
@@ -818,6 +839,7 @@ export default function Page() {
                               className="overflow-hidden"
                             >
                               <input
+                                ref={mainSearchInputRef}
                                 type="text"
                                 placeholder="Search by name..."
                                 value={searchQuery}
@@ -1072,7 +1094,7 @@ export default function Page() {
               >
                 {activeCard === 'showreel' ? (
                     <div 
-                        className={`flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-10 md:pt-12 pb-96 px-4 md:px-8`}
+                        className={`flex flex-col items-center justify-start max-w-full mx-auto w-full pt-10 md:pt-12 px-4 md:px-8`}
                         onClick={(e) => e.stopPropagation()} 
                     >
                         <motion.h2 
@@ -1108,6 +1130,8 @@ export default function Page() {
                             </motion.div>
                             ))}
                         </div>
+                        {/* FIX 2: Added Spacer for bottom padding to prevent content touching screen */}
+                        <div className="w-full h-40 shrink-0"></div>
                     </div>
                 ) : (
                     <>
@@ -1180,5 +1204,3 @@ export default function Page() {
     </div>
   );
 };
-
-
