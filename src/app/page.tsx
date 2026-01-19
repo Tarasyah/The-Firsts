@@ -233,16 +233,44 @@ const GlobalStyles = () => (
 /* -------------------------------------------------------------------------- */
 /* SUB-COMPONENT: CIRCULAR WHEEL (Immersive Detail View)                      */
 /* -------------------------------------------------------------------------- */
-const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompanionId, onModalToggle }: { items: any[], categoryInfo: any, onClose: () => void, isDarkMode: boolean, initialCompanionId: number | null, onModalToggle: (isOpen: boolean) => void }) => {
+const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, setIsDarkMode, initialCompanionId, onModalToggle }: { items: any[], categoryInfo: any, onClose: () => void, isDarkMode: boolean, setIsDarkMode: (value: boolean | ((prev: boolean) => boolean)) => void, initialCompanionId: number | null, onModalToggle: (isOpen: boolean) => void }) => {
   const CONFIG = { friction: 0.92, degPerItem: 36, visibleRange: 5 }; 
   
   const [state, setState] = useState({ rotation: 0, showModal: false, isDragging: false });
   const refs = useRef({ velocity: 0, lastY: 0, animId: null as number | null });
   const [layout, setLayout] = useState({ mode: 'desktop', radius: 120, centerX: 0 });
 
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+
   useEffect(() => {
     onModalToggle(state.showModal);
   }, [state.showModal, onModalToggle]);
+
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+        setSearchResults([]);
+        return;
+    }
+    const results = items.filter(c => 
+        c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.subtitle.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setSearchResults(results);
+  }, [searchQuery, items]);
+
+  const handleWheelSearchResultClick = (companion: any) => {
+    const companionIndex = items.findIndex(item => item.id === companion.id);
+    if (companionIndex > -1) {
+        const targetRotation = -companionIndex * CONFIG.degPerItem;
+        setState(p => ({ ...p, rotation: targetRotation }));
+        refs.current.velocity = 0;
+    }
+    setSearchQuery("");
+    setSearchResults([]);
+    setIsSearchOpen(false);
+  };
 
   useEffect(() => {
     const updateLayout = () => {
@@ -371,7 +399,59 @@ const CompanionWheel = ({ items, categoryInfo, onClose, isDarkMode, initialCompa
             >
                 {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
+            <AnimatePresence>
+              {isSearchOpen && (
+                <motion.div
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: 180, opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  className="overflow-hidden"
+                >
+                  <input
+                    type="text"
+                    placeholder="Search in category..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className={`h-full w-full bg-transparent px-2 text-sm outline-none ${isDarkMode ? 'text-white placeholder:text-white/40' : 'text-black placeholder:text-black/40'}`}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <button 
+              onClick={() => {
+                setIsSearchOpen(!isSearchOpen);
+                if (isSearchOpen) setSearchQuery('');
+              }}
+              className={`w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full transition-colors shrink-0 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
+            >
+              {isSearchOpen ? <X size={20}/> : <Search size={20}/>}
+            </button>
             </div>
+            <AnimatePresence>
+                {isSearchOpen && searchResults.length > 0 && (
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className={`w-64 max-h-80 overflow-y-auto p-2 rounded-2xl shadow-lg border backdrop-blur-md ${isDarkMode ? 'bg-slate-800/70 border-white/10' : 'bg-[#F5F5DC]/70 border-black/5'}`}
+                >
+                    <ul>
+                    {searchResults.map(companion => (
+                        <li key={companion.id}>
+                        <button
+                            onClick={() => handleWheelSearchResultClick(companion)}
+                            className={`w-full text-left p-2 rounded-lg text-sm flex items-center gap-3 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/10'}`}
+                        >
+                            <companion.icon className={`w-4 h-4 shrink-0 ${companion.color}`} />
+                            <span className="flex-1 truncate">{companion.title}</span>
+                        </button>
+                        </li>
+                    ))}
+                    </ul>
+                </motion.div>
+                )}
+            </AnimatePresence>
         </div>
       )}
 
@@ -816,6 +896,7 @@ export default function Page() {
             items={getSubDataForCategory(selectedCompanion)}
             onClose={handleCloseDetail}
             isDarkMode={isDarkMode}
+            setIsDarkMode={setIsDarkMode}
             initialCompanionId={initialCompanionId}
             onModalToggle={setIsBiographyModalOpen}
         />
@@ -994,7 +1075,7 @@ export default function Page() {
               >
                 {activeCard === 'showreel' ? (
                     <div 
-                        className={`flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-16 pb-80 px-4 md:px-8`}
+                        className={`flex flex-col items-center justify-start min-h-full max-w-full mx-auto w-full pt-10 md:pt-12 pb-96 px-4 md:px-8`}
                         onClick={(e) => e.stopPropagation()} 
                     >
                         <motion.h2 
@@ -1102,3 +1183,4 @@ export default function Page() {
     </div>
   );
 };
+
